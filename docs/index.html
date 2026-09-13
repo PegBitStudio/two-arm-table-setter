@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Two-Arm Table Setter</title>
+<meta name="description" content="Two simulated SO-101 arms set a dinner table from a plain-language command, on an Intel laptop with OpenVINO.">
+<style>
+  :root { --bg:#161b22; --panel:#222a35; --text:#e8edf2; --mute:#9aa7b5; --accent:#e8b923; --ok:#4ade80; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width:1040px; margin:0 auto; padding:40px 20px 64px; }
+  h1 { font-size:clamp(32px,5vw,48px); margin:0 0 8px; letter-spacing:-0.5px; }
+  h2 { font-size:24px; margin:48px 0 14px; }
+  p.lead { color:var(--mute); font-size:18px; margin:0 0 24px; max-width:760px; }
+  video { width:100%; border-radius:10px; background:#000; display:block; }
+  .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin-top:22px; }
+  .stat { background:var(--panel); border-radius:10px; padding:18px; }
+  .stat b { display:block; font-size:34px; color:var(--accent); line-height:1.1; }
+  .stat span { color:var(--mute); font-size:14px; }
+  .steps { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:14px; }
+  .step { background:var(--panel); border-radius:10px; padding:16px; }
+  .step i { display:inline-grid; place-items:center; width:30px; height:30px; border-radius:50%; background:var(--accent); color:var(--bg); font-style:normal; font-weight:700; margin-bottom:8px; }
+  .step h3 { margin:0 0 4px; font-size:17px; }
+  .step p { margin:0; color:var(--mute); font-size:14px; }
+  .scroll { overflow-x:auto; }
+  table { border-collapse:collapse; width:100%; min-width:560px; }
+  th, td { text-align:left; padding:9px 12px; border-bottom:1px solid #2e3743; font-size:15px; }
+  th { color:var(--accent); font-weight:600; }
+  .note { color:var(--mute); font-size:14px; }
+  a { color:var(--accent); }
+  .links a { display:inline-block; margin:6px 12px 6px 0; padding:10px 16px; border-radius:8px; background:var(--panel); text-decoration:none; color:var(--text); }
+  code { background:var(--panel); padding:2px 6px; border-radius:4px; font-size:14px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Two-Arm Table Setter</h1>
+  <p class="lead">Two simulated SO-101 robot arms set a dinner table from a plain-language command. They see with a camera,
+  understand with a vision-language model, hand items to each other, and fix their own mistakes — all on an
+  ordinary Intel laptop with OpenVINO. Built for the AI Infra Summit Hackathon, Intel online track.</p>
+
+  <video controls preload="metadata" poster="media/cover.png">
+    <source src="media/demo.mp4" type="video/mp4">
+    Your browser can't play this video — <a href="media/demo.mp4">download it</a>.
+  </video>
+  <p class="note">10 random tables (harder settings: positions, sizes, colours), the command read by Qwen3-VL each time,
+  a result card per table checked against simulator truth; then a recovery demo and the OpenVINO benchmark. Played at 2× speed.</p>
+
+  <div class="stats">
+    <div class="stat"><b>30/30</b><span>random tables set correctly</span></div>
+    <div class="stat"><b>29/30</b><span>harder tables: ±4 cm starts, sizes ±5–10%, colours</span></div>
+    <div class="stat"><b>95%</b><span>trained ACT policy, mug placed within 1.5 cm on unseen tables</span></div>
+    <div class="stat"><b>2.5×</b><span>faster policy with OpenVINO, task success unchanged</span></div>
+  </div>
+
+  <h2>How it works</h2>
+  <div class="steps">
+    <div class="step"><i>1</i><h3>Observe</h3><p>An overhead colour + depth camera finds every object — 0.5 mm average error.</p></div>
+    <div class="step"><i>2</i><h3>Understand</h3><p>Qwen3-VL-4B (INT4, OpenVINO) reads the command and the picture: "the red thing" is the mug.</p></div>
+    <div class="step"><i>3</i><h3>Plan</h3><p>Which arm, a hand-off for cutlery, a set-down swap for round items, what goes first.</p></div>
+    <div class="step"><i>4</i><h3>Act</h3><p>Two SO-101 arms; a LeRobot ACT policy, trained on a laptop CPU, handles the mug.</p></div>
+    <div class="step"><i>5</i><h3>Look again</h3><p>After every item, anything knocked out of place is put back first.</p></div>
+  </div>
+
+  <h2>Why it matters</h2>
+  <p>Service robots in homes, hospitals, hotels and restaurants need instructions anyone can give, two-handed handling,
+  and the ability to check their own work. This runs on an ordinary Intel laptop, and its skills are taught from
+  demonstrations the robot records itself — no hand-collected data.</p>
+
+  <h2>Intel optimisation, measured on this laptop</h2>
+  <p class="note">Intel Core i7-1165G7 with Iris Xe iGPU, 16 GB, OpenVINO 2026.3. Full table: <a href="https://github.com/PegBitStudio/two-arm-table-setter/blob/main/bench/RESULTS.md">bench/RESULTS.md</a></p>
+  <div class="scroll"><table>
+    <tr><th>ACT policy (CPU)</th><th>Latency</th><th>Throughput</th><th>Mug placed (10 tables)</th></tr>
+    <tr><td>PyTorch FP32</td><td>4.34 ms</td><td>230 calls/s</td><td>9/10</td></tr>
+    <tr><td>OpenVINO FP32</td><td><b>1.73 ms</b></td><td>578 calls/s</td><td>9/10</td></tr>
+    <tr><td>OpenVINO FP16</td><td>1.88 ms</td><td>532 calls/s</td><td>9/10</td></tr>
+    <tr><td>OpenVINO INT8 (NNCF)</td><td>3.68 ms</td><td>272 calls/s</td><td>9/10</td></tr>
+    <tr><td>OpenVINO INT8 weights</td><td>3.53 ms</td><td>283 calls/s</td><td>10/10</td></tr>
+  </table></div>
+  <div class="scroll"><table style="margin-top:14px">
+    <tr><th>Qwen3-VL-4B INT4</th><th>CPU</th><th>Iris Xe iGPU</th><th>Correct</th></tr>
+    <tr><td>320 px picture</td><td>3.8 s</td><td>4.0 s</td><td>5/5</td></tr>
+    <tr><td>480 px picture (used)</td><td>4.3 s</td><td>4.2 s</td><td>5/5</td></tr>
+    <tr><td>960 px picture</td><td>14.9 s</td><td>7.5 s</td><td>5/5</td></tr>
+  </table></div>
+
+  <h2>Run it yourself</h2>
+  <p>Every scene is seeded; every number here comes from one command. <code>python brain/run.py --seed 3 "set the table"</code></p>
+  <div class="links">
+    <a href="https://github.com/PegBitStudio/two-arm-table-setter">Code on GitHub</a>
+    <a href="https://github.com/PegBitStudio/two-arm-table-setter/blob/main/docs/setup.md">Setup guide</a>
+    <a href="https://github.com/PegBitStudio/two-arm-table-setter/blob/main/docs/worklog.md">Build log — including what failed</a>
+  </div>
+  <p class="note">Honest limits: tested on an 11th-gen Core i7, not the Core Ultra the brief prefers (no NPU); most skills
+  are scripted, one is a trained policy; the drawer and pouring from the example task are not included. MIT licence.</p>
+</main>
+</body>
+</html>

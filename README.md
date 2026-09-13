@@ -1,6 +1,6 @@
 # Two-Arm Table Setter
 
-**Two simulated SO-101 robot arms that set a dinner table from a spoken or typed command —
+**Two simulated SO-101 robot arms that set a dinner table from a plain-language command —
 seeing with a camera, understanding with a vision-language model, handing things to each other,
 and fixing their own mistakes. Everything runs on a 2020 Intel laptop (i7-1165G7, Iris Xe) with
 OpenVINO. No GPU card, no cloud.**
@@ -8,14 +8,14 @@ OpenVINO. No GPU card, no cloud.**
 Built for the AI Infra Summit Hackathon (lablab.ai) — Intel online track: *Bimanual VLA
 Manipulation with Multi-Modal Reasoning*.
 
-> 🎬 Demo video: *(link)* · Recovery demo: `brain/out/run_seed3.gif`
+> 🎬 **Demo page with the 10-table video:** https://pegbitstudio.github.io/two-arm-table-setter/
 
 ## What it does
 
 ```
  "put the red thing top left of the plate      overhead camera (colour + depth)
   and the grey utensil on the right"                        │
-          │ (voice: Speechmatics)                            ▼
+          │ (voice via Speechmatics: wired in, untested)     ▼
           ▼                                   ┌──────────────────────────┐
  ┌───────────────────────────┐   picture      │ EYES  perception.py      │
  │ UNDERSTAND  Qwen3-VL-4B    │ ◄───────────── │ finds every object from  │
@@ -81,6 +81,61 @@ Optimisation never hurt the task. INT8 accuracy was tuned: NNCF's default preset
 The iGPU's advantage is reading the picture (time to first token 1.6 s vs 2.7 s at 480 px;
 4.8 s vs 13.2 s at 960 px). Two prompt changes cut a command from ~30 s to ~4 s: a 480-px
 picture instead of 960, and plain `object: place` lines instead of JSON (fewer tokens to write).
+
+## Why it matters (business value)
+
+Service robots in homes, hospitals, hotels and restaurants need three things this project
+demonstrates together: **plain-language instructions** anyone can give, **two-handed work**
+(passing, holding, placing), and **checking their own work** so a bump doesn't ruin the job.
+Two further points lower the cost of getting there:
+
+- **No expensive computer.** Everything, including the vision-language model, runs on an
+  ordinary Intel laptop with OpenVINO — the kind of computer that can sit inside a low-cost,
+  open-source robot like the SO-101.
+- **No hand-recorded training data.** The scripted skills record their own demonstrations
+  (1,219 here, overnight on a laptop), and a policy learns from them. Data collection is usually
+  the most expensive part of robot learning.
+
+## Intel hardware mapping
+
+| Part | Runs on | Format |
+|---|---|---|
+| Command understanding — Qwen3-VL-4B | **iGPU** (Iris Xe) by default; CPU also works | OpenVINO GenAI, INT4 |
+| Mug skill — ACT policy (5 M parameters) | **CPU** — 2.5× faster than PyTorch; the iGPU is slower for a model this small | OpenVINO IR, FP16 (FP32/INT8 also exported) |
+| Perception — colour + depth analysis | CPU | NumPy/SciPy (no neural network) |
+| Physics simulation | CPU | MuJoCo 3.13 |
+| NPU | not present on this laptop — untested | – |
+
+## Training approach
+
+1. **Teacher:** the scripted skills (camera-driven pick, place, hand-off) perform the mug task
+   on random tables; each run is sampled 20×/s as (joint angles, task inputs) → (hand target).
+2. **Filter:** runs that miss (judged by simulator truth) are thrown away — 1,219 kept.
+3. **Student:** LeRobot's ACT (action chunking transformer), 5 M parameters, 1-second action
+   chunks, trained 9,000 steps on a laptop CPU.
+4. **What made it work** (7 versions, all in [docs/worklog.md](docs/worklog.md)): one consistent
+   grip rule for the teacher; absolute hand targets instead of small moves (which drift);
+   everything measured from the mug, so picking is a fixed offset and placing is given.
+5. **Deployment:** exported to OpenVINO; used by the full robot with `run.py --policy` where the
+   target lies in the area it was trained on.
+
+## Robustness
+
+- **Randomised every run (seeded):** start positions, object mass (0.7–1.4×), friction
+  (0.8–1.2×), light brightness and direction, table colour. `--hard` adds ±4 cm starts, object
+  sizes ±5–10% and floor colour — the robot still assumes standard sizes.
+- **Closed loop:** after every item the robot looks again; failed grasps are retried (up to 3×)
+  and anything knocked out of place is put back first.
+- **Measured, not claimed:** `brain/evaluate.py` scores 30 tables against simulator truth;
+  `brain/make_video.py` films 10 with result cards.
+
+## Tools used — and Intel resources we didn't use
+
+Used: **MuJoCo**, **Hugging Face LeRobot** (ACT), **OpenVINO** (runtime, GenAI, model conversion),
+**NNCF** (INT8), Intel's **Qwen3-VL-4B INT4** OpenVINO build, SO-101 model from TheRobotStudio.
+Not used: **Intel Physical AI Studio** and **Edge AI Suites** (their install scripts are
+Ubuntu-only; our laptop runs Windows), **Intel Geti** (for training camera models; our
+perception is geometric and needs no training). The brief lists these as optional resources.
 
 ## How it maps to Intel's scoring
 

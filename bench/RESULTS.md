@@ -22,17 +22,17 @@ Hardware: 11th Gen Intel(R) Core(TM) i7-1165G7 @ 2.80GHz; devices: CPU = 11th Ge
 
 ## act
 
-| backend | precision | device | ms_per_call | speedup_vs_pytorch |
-|---|---|---|---|---|
-| PyTorch | FP32 | CPU | 4.339 | 1.0 |
-| OpenVINO | FP32 | CPU | 1.727 | 2.51 |
-| OpenVINO | FP32 | GPU | 12.378 | 0.35 |
-| OpenVINO | FP16 | CPU | 1.877 | 2.31 |
-| OpenVINO | FP16 | GPU | 14.611 | 0.3 |
-| OpenVINO | INT8 | CPU | 3.684 | 1.18 |
-| OpenVINO | INT8 | GPU | 12.861 | 0.34 |
-| OpenVINO | INT8W | CPU | 3.53 | 1.23 |
-| OpenVINO | INT8W | GPU | 23.488 | 0.18 |
+| backend | precision | device | ms_per_call | speedup_vs_pytorch | calls_per_s | actions_per_s |
+|---|---|---|---|---|---|---|
+| PyTorch | FP32 | CPU | 4.339 | 1.0 | 230.5 | 4609 |
+| OpenVINO | FP32 | CPU | 1.727 | 2.51 | 579.0 | 11581 |
+| OpenVINO | FP32 | GPU | 12.378 | 0.35 | 80.8 | 1616 |
+| OpenVINO | FP16 | CPU | 1.877 | 2.31 | 532.8 | 10655 |
+| OpenVINO | FP16 | GPU | 14.611 | 0.3 | 68.4 | 1369 |
+| OpenVINO | INT8 | CPU | 3.684 | 1.18 | 271.4 | 5429 |
+| OpenVINO | INT8 | GPU | 12.861 | 0.34 | 77.8 | 1555 |
+| OpenVINO | INT8W | CPU | 3.53 | 1.23 | 283.3 | 5666 |
+| OpenVINO | INT8W | GPU | 23.488 | 0.18 | 42.6 | 851 |
 
 ## act_task
 

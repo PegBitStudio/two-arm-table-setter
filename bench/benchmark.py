@@ -120,11 +120,20 @@ def bench_act(devices, calls=500):
                 net([s, e])
             rows.append({"backend": "OpenVINO", "precision": prec.upper(), "device": dev,
                          "ms_per_call": round(1000 * (time.perf_counter() - t) / calls, 3)})
-    base = rows[0]["ms_per_call"]
+    add_throughput(rows)
     for r in rows:
-        r["speedup_vs_pytorch"] = round(base / r["ms_per_call"], 2)
         print("  ", r)
     return rows
+
+
+def add_throughput(rows):
+    """Calls per second, action steps per second (each call yields a 1-second, 20-step chunk,
+    run open-loop), and speed-up over PyTorch."""
+    base = rows[0]["ms_per_call"]
+    for r in rows:
+        r["calls_per_s"] = round(1000 / r["ms_per_call"], 1)
+        r["actions_per_s"] = round(20 * 1000 / r["ms_per_call"])
+        r["speedup_vs_pytorch"] = round(base / r["ms_per_call"], 2)
 
 
 def bench_act_task(episodes=10):
@@ -179,7 +188,15 @@ def main():
     p.add_argument("--only", choices=["vlm", "act", "act_task", "perception"])
     p.add_argument("--widths", default="320,480,960")
     p.add_argument("--devices", help="comma list, default: every CPU/GPU/NPU found")
+    p.add_argument("--report-only", action="store_true", help="rebuild RESULTS.md from results.json")
     args = p.parse_args()
+    if args.report_only:
+        res = json.loads((OUT / "results.json").read_text())
+        add_throughput(res["parts"]["act"])
+        (OUT / "results.json").write_text(json.dumps(res, indent=2))
+        (OUT / "RESULTS.md").write_text(to_markdown(res))
+        print("rebuilt RESULTS.md")
+        return
     devices = [d for d in ov.Core().available_devices if d in ("CPU", "GPU", "NPU")]
     if args.devices:
         devices = [d for d in args.devices.split(",") if d in devices]

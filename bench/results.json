@@ -68,63 +68,81 @@
         "precision": "FP32",
         "device": "CPU",
         "ms_per_call": 4.339,
-        "speedup_vs_pytorch": 1.0
+        "speedup_vs_pytorch": 1.0,
+        "calls_per_s": 230.5,
+        "actions_per_s": 4609
       },
       {
         "backend": "OpenVINO",
         "precision": "FP32",
         "device": "CPU",
         "ms_per_call": 1.727,
-        "speedup_vs_pytorch": 2.51
+        "speedup_vs_pytorch": 2.51,
+        "calls_per_s": 579.0,
+        "actions_per_s": 11581
       },
       {
         "backend": "OpenVINO",
         "precision": "FP32",
         "device": "GPU",
         "ms_per_call": 12.378,
-        "speedup_vs_pytorch": 0.35
+        "speedup_vs_pytorch": 0.35,
+        "calls_per_s": 80.8,
+        "actions_per_s": 1616
       },
       {
         "backend": "OpenVINO",
         "precision": "FP16",
         "device": "CPU",
         "ms_per_call": 1.877,
-        "speedup_vs_pytorch": 2.31
+        "speedup_vs_pytorch": 2.31,
+        "calls_per_s": 532.8,
+        "actions_per_s": 10655
       },
       {
         "backend": "OpenVINO",
         "precision": "FP16",
         "device": "GPU",
         "ms_per_call": 14.611,
-        "speedup_vs_pytorch": 0.3
+        "speedup_vs_pytorch": 0.3,
+        "calls_per_s": 68.4,
+        "actions_per_s": 1369
       },
       {
         "backend": "OpenVINO",
         "precision": "INT8",
         "device": "CPU",
         "ms_per_call": 3.684,
-        "speedup_vs_pytorch": 1.18
+        "speedup_vs_pytorch": 1.18,
+        "calls_per_s": 271.4,
+        "actions_per_s": 5429
       },
       {
         "backend": "OpenVINO",
         "precision": "INT8",
         "device": "GPU",
         "ms_per_call": 12.861,
-        "speedup_vs_pytorch": 0.34
+        "speedup_vs_pytorch": 0.34,
+        "calls_per_s": 77.8,
+        "actions_per_s": 1555
       },
       {
         "backend": "OpenVINO",
         "precision": "INT8W",
         "device": "CPU",
         "ms_per_call": 3.53,
-        "speedup_vs_pytorch": 1.23
+        "speedup_vs_pytorch": 1.23,
+        "calls_per_s": 283.3,
+        "actions_per_s": 5666
       },
       {
         "backend": "OpenVINO",
         "precision": "INT8W",
         "device": "GPU",
         "ms_per_call": 23.488,
-        "speedup_vs_pytorch": 0.18
+        "speedup_vs_pytorch": 0.18,
+        "calls_per_s": 42.6,
+        "actions_per_s": 851
       }
     ],
     "act_task": [

@@ -35,7 +35,7 @@ function circle(s, x, y, label, d = 0.42) {
   const s = pres.addSlide(); bg(s);
   title(s, "One command. Two hands. A set table.", "Tested the way Intel asked: random tables, success checked against simulator truth");
   const lines = [
-    { text: "Say or type what you want", options: { bold: true, color: C.white, breakLine: true } },
+    { text: "Type what you want", options: { bold: true, color: C.white, breakLine: true } },
     { text: "\"put the red thing top left of the plate and the grey utensil on the right\"", options: { italic: true, color: C.mute, breakLine: true } },
     { text: " ", options: { breakLine: true } },
     { text: "The robot works out the rest", options: { bold: true, color: C.white, breakLine: true } },
@@ -51,6 +51,26 @@ function circle(s, x, y, label, d = 0.42) {
     s.addText(l, { x: x + 0.12, y: y + 0.88, w: 1.86, h: 0.55, align: "center", valign: "top", fontFace: B, fontSize: 12, color: C.white, margin: 0, isTextBox: true });
   });
   s.addNotes("The robot sets the table correctly on 30 out of 30 random tables, and 29 out of 30 when we make it harder by moving things further and changing their sizes and colours. Success is always judged against where objects really are in the simulator, not against what the robot thinks.");
+}
+
+// 2b — why it matters (business value)
+{
+  const s = pres.addSlide(); bg(s);
+  title(s, "Why it matters", "Service robots for homes, hospitals, hotels and restaurants");
+  const cards = [
+    ["Anyone can instruct it", "Plain-language instructions. No programming, no app, no fixed commands."],
+    ["Two hands, real tasks", "Passing, holding and placing — the everyday handling that one-armed robots can't do."],
+    ["Checks its own work", "A bump or a slip is noticed and fixed, so a job gets finished without a person watching."],
+    ["Cheap to run and to teach", "Runs on an ordinary Intel laptop with OpenVINO. Skills teach themselves from auto-recorded demos — no hand-collected data."],
+  ];
+  cards.forEach(([h, d], i) => {
+    const x = 0.5 + (i % 2) * 4.6, y = 1.45 + Math.floor(i / 2) * 1.95;
+    s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y, w: 4.4, h: 1.75, fill: { color: C.panel }, line: { color: C.panel }, rectRadius: 0.08 });
+    circle(s, x + 0.25, y + 0.28, String(i + 1), 0.4);
+    s.addText(h, { x: x + 0.8, y: y + 0.28, w: 3.4, h: 0.4, fontFace: H, fontSize: 16, bold: true, color: C.white, margin: 0, isTextBox: true });
+    s.addText(d, { x: x + 0.8, y: y + 0.72, w: 3.4, h: 0.9, fontFace: B, fontSize: 13, color: C.mute, valign: "top", margin: 0, isTextBox: true });
+  });
+  s.addNotes("Why does this matter? Service robots in homes, hospitals, hotels and restaurants need exactly this combination: anyone can tell them what to do in plain language, they can use two hands, and they check their own work. And it's cheap: it runs on an ordinary laptop, and the skills teach themselves from demonstrations the robot records on its own.");
 }
 
 // 3 — how it works

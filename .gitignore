@@ -5,3 +5,4 @@ train/data/
 __pycache__/
 .venv/
 .env
+submission/*.mp4

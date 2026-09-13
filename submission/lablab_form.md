@@ -4,7 +4,7 @@
 Two-Arm Table Setter
 
 ## Short description (one line)
-Two simulated SO-101 arms set a dinner table from a spoken or typed command: they see with a camera, understand with Qwen3-VL on OpenVINO, hand items to each other, and fix their own mistakes — all on an Intel laptop.
+Two simulated SO-101 arms set a dinner table from a plain-language command: they see with a camera, understand with Qwen3-VL on OpenVINO, hand items to each other, and fix their own mistakes — all on an Intel laptop.
 
 ## Long description
 Say "set the table" — or "put the red thing top left of the plate and the grey utensil on the right" — and two SO-101 robot arms in MuJoCo do it.
@@ -15,6 +15,8 @@ Say "set the table" — or "put the red thing top left of the plate and the grey
 
 **Intel optimisation.** OpenVINO runs the ACT policy 2.5× faster than PyTorch on the CPU with no loss of task success, measured at FP32, FP16, INT8 and INT8-weights. Command understanding went from 30 s to about 4 s through smaller pictures and shorter answers; the Iris Xe iGPU halves the time for large pictures.
 
+**Why it matters.** Service robots in homes, hospitals, hotels and restaurants need exactly this combination: instructions anyone can give in plain language, two-handed handling, and checking their own work so a bump doesn't ruin the job. It is also cheap: everything runs on an ordinary Intel laptop, and skills are taught from demonstrations the robot records itself — no hand-collected data, usually the most expensive part of robot learning.
+
 **Results.** 30/30 random tables set correctly; 29/30 on harder tables (±4 cm starts, object sizes ±5–10%, varied colours). Every number is checked against simulator truth and reproducible from one command. Hardware: Intel Core i7-1165G7 with Iris Xe, 16 GB, no NPU, no cloud.
 
 ## Technology & category tags
@@ -23,8 +25,12 @@ OpenVINO, Intel, LeRobot, ACT, Qwen3-VL, MuJoCo, SO-101, Robotics, Physical AI, 
 (Add "Speechmatics" only once voice input has been tested with a real API key — the code is in
 `brain/voice.py` but it has never run.)
 
+## App hosting
+- **Demo application platform:** GitHub Pages (simulation demo page — the robot itself runs locally)
+- **Application URL:** https://pegbitstudio.github.io/two-arm-table-setter/
+
 ## Links
 - GitHub: https://github.com/PegBitStudio/two-arm-table-setter
-- Demo video: (upload `brain/out/demo_10_tables.mp4` or the narrated version)
+- Demo video: `submission/two_arm_table_setter_demo.mp4` (upload to YouTube and paste the link)
 - Slides: `submission/slides.pptx` (export to PDF if the form asks)
 - Cover image: `submission/cover.png`
