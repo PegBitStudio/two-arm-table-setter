@@ -4,10 +4,10 @@
 Two-Arm Table Setter
 
 ## Short description (one line)
-Two simulated SO-101 arms set a dinner table from a plain-language command: they see with a camera, understand with Qwen3-VL on OpenVINO, hand items to each other, and fix their own mistakes — all on an Intel laptop.
+Two simulated SO-101 arms set a dinner table from a spoken or typed command: they see with a camera, understand with Qwen3-VL on OpenVINO, hand items to each other, and fix their own mistakes — all on an Intel laptop.
 
 ## Long description
-Say "set the table" — or "put the red thing top left of the plate and the grey utensil on the right" — and two SO-101 robot arms in MuJoCo do it.
+Say "set the table" (Speechmatics turns speech into text in about 2.6 s) — or "put the red thing top left of the plate and the grey utensil on the right" — and two SO-101 robot arms in MuJoCo do it.
 
 **How it works.** An overhead colour-and-depth camera finds every object from its height and shape (0.5 mm average error on 20 random tables; the simulator's positions are never used to act). Qwen3-VL-4B, running locally as Intel's INT4 OpenVINO build, reads the command together with the camera picture, so it understands "the red thing" means the mug. A planner decides which arm does what: cutlery that starts on the wrong side is passed hand to hand, and round items are set down where both arms can reach. After every item the robot looks again, and anything knocked out of place is put back first.
 
@@ -20,10 +20,7 @@ Say "set the table" — or "put the red thing top left of the plate and the grey
 **Results.** 30/30 random tables set correctly; 29/30 on harder tables (±4 cm starts, object sizes ±5–10%, varied colours). Every number is checked against simulator truth and reproducible from one command. Hardware: Intel Core i7-1165G7 with Iris Xe, 16 GB, no NPU, no cloud.
 
 ## Technology & category tags
-OpenVINO, Intel, LeRobot, ACT, Qwen3-VL, MuJoCo, SO-101, Robotics, Physical AI, Vision-Language Model, Imitation Learning, NNCF
-
-(Add "Speechmatics" only once voice input has been tested with a real API key — the code is in
-`brain/voice.py` but it has never run.)
+OpenVINO, Intel, LeRobot, ACT, Qwen3-VL, MuJoCo, SO-101, Robotics, Physical AI, Vision-Language Model, Imitation Learning, NNCF, Speechmatics
 
 ## App hosting
 - **Demo application platform:** GitHub Pages (simulation demo page — the robot itself runs locally)

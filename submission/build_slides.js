@@ -35,7 +35,7 @@ function circle(s, x, y, label, d = 0.42) {
   const s = pres.addSlide(); bg(s);
   title(s, "One command. Two hands. A set table.", "Tested the way Intel asked: random tables, success checked against simulator truth");
   const lines = [
-    { text: "Type what you want", options: { bold: true, color: C.white, breakLine: true } },
+    { text: "Say or type what you want", options: { bold: true, color: C.white, breakLine: true } },
     { text: "\"put the red thing top left of the plate and the grey utensil on the right\"", options: { italic: true, color: C.mute, breakLine: true } },
     { text: " ", options: { breakLine: true } },
     { text: "The robot works out the rest", options: { bold: true, color: C.white, breakLine: true } },
@@ -58,7 +58,7 @@ function circle(s, x, y, label, d = 0.42) {
   const s = pres.addSlide(); bg(s);
   title(s, "Why it matters", "Service robots for homes, hospitals, hotels and restaurants");
   const cards = [
-    ["Anyone can instruct it", "Plain-language instructions. No programming, no app, no fixed commands."],
+    ["Anyone can instruct it", "Plain language, spoken or typed. No programming, no app, no fixed commands."],
     ["Two hands, real tasks", "Passing, holding and placing — the everyday handling that one-armed robots can't do."],
     ["Checks its own work", "A bump or a slip is noticed and fixed, so a job gets finished without a person watching."],
     ["Cheap to run and to teach", "Runs on an ordinary Intel laptop with OpenVINO. Skills teach themselves from auto-recorded demos — no hand-collected data."],

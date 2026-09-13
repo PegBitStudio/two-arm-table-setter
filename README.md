@@ -1,6 +1,6 @@
 # Two-Arm Table Setter
 
-**Two simulated SO-101 robot arms that set a dinner table from a plain-language command —
+**Two simulated SO-101 robot arms that set a dinner table from a spoken or typed command —
 seeing with a camera, understanding with a vision-language model, handing things to each other,
 and fixing their own mistakes. Everything runs on a 2020 Intel laptop (i7-1165G7, Iris Xe) with
 OpenVINO. No GPU card, no cloud.**
@@ -15,7 +15,7 @@ Manipulation with Multi-Modal Reasoning*.
 ```
  "put the red thing top left of the plate      overhead camera (colour + depth)
   and the grey utensil on the right"                        │
-          │ (voice via Speechmatics: wired in, untested)     ▼
+          │ (voice: Speechmatics, 2.6 s)                     ▼
           ▼                                   ┌──────────────────────────┐
  ┌───────────────────────────┐   picture      │ EYES  perception.py      │
  │ UNDERSTAND  Qwen3-VL-4B    │ ◄───────────── │ finds every object from  │
@@ -49,6 +49,7 @@ Success is always judged against simulator ground truth, never the robot's own c
 | Harder tables (±4 cm starts, sizes ±5–10%, floor colour), 30 tables | **29/30** |
 | Recovery: an item knocked out of place mid-task | noticed and fixed (demo) |
 | Camera perception, 20 tables | every object found, 0.5 mm mean / 1.0 mm worst error |
+| Spoken command → text (Speechmatics batch API) | "Please set the table." transcribed in 2.6 s; table then set 4/4 |
 | Command understanding (Qwen3-VL-4B INT4, OpenVINO GenAI) | 5/5 test commands, **~4 s** per command (CPU or iGPU) |
 | Trained ACT policy (LeRobot), mug pick-and-place on 20 unseen tables | **19/20 within 1.5 cm** |
 | ACT on OpenVINO vs PyTorch, CPU | **2.5× faster** (1.7 ms vs 4.3 ms per call), task success unchanged |

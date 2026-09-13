@@ -210,5 +210,15 @@ upload (YouTube); narration (optional); final form submission before 16 Sep 19:3
   10 hard tables → recovery clip → ACT and VLM benchmark cards → links.
 - **Demo page (application URL):** https://pegbitstudio.github.io/two-arm-table-setter/ —
   GitHub Pages from `docs/`, video in `docs/media/demo.mp4`. Checked in the browser: loads, video plays.
-- Remaining: Core Ultra/NPU run (no hardware), voice (needs key), narrated pitch (optional),
-  user's lablab actions.
+- Remaining: Core Ultra/NPU run (no hardware), narrated pitch (optional), user's lablab actions.
+
+## 2026-09-13 (late) — voice works
+
+- User created a Speechmatics key and set `SPEECHMATICS_API_KEY` themselves (setx); never
+  entered in chat.
+- `brain/voice.py test_command.wav` → "Please set the table." First try, batch API as written.
+- `run.py --seed 5 --audio test_command.wav`: heard in 2.6 s, Qwen3-VL 9.9 s, table set 4/4 (both hand-offs).
+- Voice claims restored in README, slides, form (+ Speechmatics tag).
+- WhatsApp status clip `submission/status_clip.mp4` (23 s vertical, `make_status_clip.py`) asking
+  for Core Ultra volunteers.
+- Next option: live listening (microphone → Speechmatics real-time → robot) for the bonus.

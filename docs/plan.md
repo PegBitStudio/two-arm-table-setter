@@ -129,7 +129,7 @@ Main aim is **learning** (robot simulation, vision-language models, OpenVINO). W
 | lablab judging — business value | ✓ slide 3, README, form text |
 | lablab — MIT licence, original work | ✓ |
 | lablab — team on lablab, Discord | ✗ user |
-| Speechmatics bonus — real-time voice agent | ✗ batch code only, untested, no key |
+| Speechmatics bonus — voice agent | ✓ batch API tested: "Please set the table." in 2.6 s → table set 4/4; live listening not built yet |
 
 ## Decisions still open
 
