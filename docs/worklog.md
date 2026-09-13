@@ -148,4 +148,50 @@ Windows ~300-render-window limit.
     Fix: taker lines up 1.5 mm away instead of 4 mm → **hard 18/20, normal 20/20**.
   - Cutlery starting very near an arm's base: the near end can't be reached pointing down;
     now falls back to the far end.
-- **Still on the user:** lablab + Discord sign-up, team, teammate, Kaggle account, GitHub repo.
+- **Both arms at once** in hand-offs: the taker moves to wait above its end while the giver
+  carries the object in (one `sim.move` for both arms). Normal 30/30 unchanged.
+- **Final 30-table scores (current code): normal 30/30, hard 29/30** (seed 3: spoon starts
+  too close to arm A's base to grasp).
+- **ACT v7 final = step 9,000: 19/20 within 1.5 cm (95%)**, avg miss < 1 cm. Training stopped
+  there when the session ended; kept it rather than training to 12k. Checkpoint in
+  `~/.models/runs/act_mug/checkpoints/009000` (and `last`).
+- `run.py --policy`: the ACT policy (OpenVINO FP16, CPU) moves the mug when the target is in
+  its trained area (`policy_skill.covers`); scripted skills elsewhere. "set the table" puts the
+  mug top-right, outside that area, so it uses the scripted skill; "put the cup to the right
+  of the plate" uses the policy.
+
+## 2026-09-13 — Day 6 (submission kit)
+
+- **Benchmark** (`bench/benchmark.py`, results in `bench/results.json`, `bench/RESULTS.md`):
+  - ACT, CPU ms/call: PyTorch 4.34 · OV FP32 **1.73 (2.5×)** · FP16 1.88 · INT8 3.68 · INT8-weights
+    3.53. iGPU 12–23 ms (dispatch overhead dominates a 5 M model). Task success on 10 unseen
+    tables: 9/10 for PyTorch, FP32, FP16, INT8; 10/10 for INT8-weights — optimisation never hurt.
+  - INT8 drift vs PyTorch: FP16 0.0002, INT8 0.08, INT8-weights 0.007 (normalised units).
+  - Qwen3-VL s/command (5/5 correct everywhere): CPU 3.8/4.3/14.9, iGPU 4.0/4.2/7.5 at
+    320/480/960 px. iGPU wins time-to-first-token (1.6 vs 2.7 s at 480 px).
+  - Perception: 889 ms per look (3 renders at 960×720 + blob analysis) — not optimised.
+- **GitHub**: public repo https://github.com/PegBitStudio/two-arm-table-setter (user approved,
+  account PegBitStudio). Secret scan clean. Apache licence for the SO-101 model added.
+- **Demo video** `brain/out/demo_10_tables.mp4` (8.5 MB, not in git): `make_video.py --seeds 10
+  --start 100 --hard --model` — **10/10 hard tables**, Qwen3-VL reading the command, front view
+  + robot's camera inset, captions, a result card per table, scoreboard. ~5.5 min render per table.
+  Recovery GIF: `brain/out/run_seed3.gif`.
+- **Submission folder**: `cover.png` (`make_cover.py`), `slides.pptx` (7 slides, narration in
+  the notes; built by `build_slides.js` with pptxgenjs, previewed with PowerPoint COM),
+  `img/` (clean renders, `make_slide_images.py`), `lablab_form.md` (all form text).
+- Laptop slept overnight again risk: keep-awake requested for long jobs.
+
+## Status at end of Day 6 (13 Sep, evening) — what's left
+
+Done vs Intel's five deliverables: repo ✓, reproducible MuJoCo sim + randomisation + eval
+config ✓, benchmark script ✓ (not on Core Ultra), 10-seed video ✓ (needs upload), technical
+README ✓ (needs training/robustness/hardware-mapping sections).
+
+Gaps found in the final audit (see plan.md → Final audit): lablab asks for an **application
+URL + demo platform** (we have none yet); lablab judges **business value** (not in the pitch
+yet); the recommended demo sequence ends with the **benchmark results** (not in the video);
+benchmark lacks an explicit **throughput** column; voice/Speechmatics **untested**; no
+**Core Ultra/NPU** run.
+
+**Still on the user:** lablab + Discord sign-up and team; Speechmatics key (optional); video
+upload (YouTube); narration (optional); final form submission before 16 Sep 19:30 WAT.

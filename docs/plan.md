@@ -88,9 +88,10 @@ Main aim is **learning** (robot simulation, vision-language models, OpenVINO). W
 - [x] Train ACT with LeRobot — **on the laptop CPU, no Kaggle needed**. Took 7 versions to get
   right (see worklog table). v7 (mug-relative hand targets): picks and places upright every time;
   placement ~2 cm off at step 3k, still training.
-- [ ] Convert the policy to OpenVINO FP32/FP16/INT8 (`bench/export_act.py` ready, waiting on final v7)
-- [x] VLM benchmark on Iris Xe: 30 s → **5.2 s per command**, 5/5 correct
-- [ ] ACT + CPU-vs-GPU benchmark rows (after v7)
+- [x] Convert the policy to OpenVINO FP32/FP16/INT8/INT8-weights (`bench/export_act.py`)
+- [x] VLM benchmark: 30 s → **~4 s per command** (CPU or iGPU), 5/5 correct
+- [x] ACT benchmark: OpenVINO CPU **2.5× faster** than PyTorch, task success unchanged
+- [x] Final policy v7 @ 9k steps: **19/20 within 1.5 cm (95%)**; wired in as `run.py --policy`
 
 ### Day 5 · Sun 13 Sep — Test and fix
 - [x] Recovery demo: knock an item, robot sees and fixes it (`run.py --bump plate`)
@@ -100,21 +101,44 @@ Main aim is **learning** (robot simulation, vision-language models, OpenVINO). W
 - [x] Scores (30 tables each): **normal 30/30, hard 29/30**
 - [ ] Freeze the code at 10 PM Tue — no new features after this
 
-### Day 6 · Wed 16 Sep — Package and submit
-- [ ] Record the demo video (command → 10 seeds → results → benchmark), about 3 minutes
-- [ ] Slides (5–7), cover image, README with architecture and setup steps
+### Day 6 · Package and submit (*kit built Sun 13 Sep*)
+- [x] Demo video: 10 hard tables, AI model reading the command → **10/10** (`brain/out/demo_10_tables.mp4`)
+- [x] Slides (7, narration in notes), cover image, README with architecture, results and setup
+- [x] Public GitHub repo: https://github.com/PegBitStudio/two-arm-table-setter
+- [x] lablab form text: `submission/lablab_form.md`
+- [ ] Close the final-audit gaps below
 - [ ] Clean-machine test of the setup steps if possible
-- [ ] **Submit on lablab by 3:00 PM WAT**
+- [ ] **User: submit on lablab by 3:00 PM WAT Wed 16 Sep** (deadline 7:30 PM)
+
+## Final audit — requirements vs what we have (13 Sep)
+
+| Requirement (source) | Status |
+|---|---|
+| Intel 1 — reproducible GitHub repo (setup, deps, scene, training, eval, inference, commands) | ✓ |
+| Intel 2 — reproducible MuJoCo dual-arm dinner-table sim, randomisation, eval config | ✓ `scene.py --hard`, `evaluate.py` |
+| Intel 3 — benchmark script: latency, throughput, device, precision, on Core Ultra 2/3 | ✓ except **no throughput column** and **no Core Ultra** |
+| Intel 4 — video, 10 randomised seeds, command + scene variation + outcome clear | ✓ 10/10 video; **benchmark not shown in it**; needs upload |
+| Intel 5 — technical README: architecture, model choice, bimanual strategy, training, robustness, OpenVINO, hardware mapping | ✓ mostly; **add training, robustness and hardware-mapping sections** |
+| Intel — "run final simulation on Core Ultra 2/3" | ✗ not possible on our laptop (brief allows Intel CPU + iGPU) |
+| Intel — preserve task success after optimisation | ✓ `act_task` table |
+| Intel scenario — drawer, pouring | ✗ cut (optional "challenge option") |
+| lablab — title, short/long description, tags | ✓ `lablab_form.md` |
+| lablab — cover image, slides | ✓ |
+| lablab — video presentation | ✓ demo video; a narrated pitch video would be better |
+| lablab — **demo application platform + application URL** | ✗ **missing** — GitHub Pages page with video + results is the plan |
+| lablab judging — **business value** | ✗ **not in pitch yet** |
+| lablab — MIT licence, original work | ✓ |
+| lablab — team on lablab, Discord | ✗ user |
+| Speechmatics bonus — real-time voice agent | ✗ batch code only, untested, no key |
 
 ## Decisions still open
 
 1. **Windows or WSL2 Ubuntu?** Intel's install scripts are Ubuntu-only. MuJoCo and OpenVINO also
    run on plain Windows. **Decided 11 Sep: plain Windows.** MuJoCo 3.13 and OpenVINO 2026.3 both
    work, and OpenVINO sees CPU + Iris Xe GPU. Switch to WSL2 only if LeRobot training breaks.
-2. **Which vision-language model?** Needs to run on 16 GB RAM with no graphics card. Decide on Day 3
-   after a quick speed test.
-3. **Demo "app URL".** A simulation can't really be hosted for free. Likely a GitHub Pages page with
-   the video and results. Confirm on Discord.
+2. **Which vision-language model?** Decided Day 3: Qwen3-VL-4B INT4 (Intel's OpenVINO build).
+3. **Demo "app URL".** A simulation can't really be hosted for free. Plan: a GitHub Pages page
+   with the video and results. **Still open** — see Final audit.
 
 ## Where we'll lose points (and accept it)
 

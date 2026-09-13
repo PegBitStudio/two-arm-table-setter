@@ -96,6 +96,31 @@ python brain/test_perception.py --seeds 10             # how accurate the camera
 
 Add `--video` to `run.py` to save `brain/out/run_seed<N>.gif` (a few minutes — rendering is slow).
 
+## Training the ACT policy (CPU, no GPU needed)
+
+```bash
+python train/record_demos.py --episodes 270 --mode abs --seed-start 100000 --out train/data/mug_abs_p1
+python train/merge_datasets.py --out train/data/mug_abs_all train/data/mug_abs_p1 ...
+python train/convert_to_mug_frame.py --src train/data/mug_abs_all --dst train/data/mug_rel_all
+python train/train_act.py --steps 9000 --data train/data/mug_rel_all   # ~2.5 h on 4 cores
+python train/eval_policy.py --episodes 20                              # unseen tables
+python bench/export_act.py                                             # OpenVINO FP32/FP16/INT8
+```
+
+Runs and checkpoints go to `~/.models/runs/act_mug` (outside the project: they're large).
+Windows allows one process ~300 render windows, so record in batches of ≤270 episodes
+(run several recorders in parallel with different `--seed-start`).
+
+## Benchmark and video
+
+```bash
+python bench/benchmark.py                      # -> bench/RESULTS.md, bench/results.json (~40 min)
+python brain/make_video.py --seeds 10 --start 100 --hard --model   # -> brain/out/demo.mp4 (~1 h)
+python submission/make_cover.py                # cover image
+```
+
+Long jobs stall if the PC sleeps — keep it awake while they run.
+
 ## Renderer gotcha (Windows)
 
 `mujoco.Renderer.close()` frees its GPU objects in the wrong order, which makes every other
