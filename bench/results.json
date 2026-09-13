@@ -1,0 +1,24 @@
+{
+  "parts": {
+    "vlm": [
+      {
+        "device": "GPU",
+        "image_width": 480,
+        "load_s": 37.6,
+        "s_per_command": 5.2,
+        "first_token_ms": 1795,
+        "tokens_per_s": 3.4,
+        "correct": "5/5"
+      }
+    ]
+  },
+  "hardware": {
+    "cpu": "11th Gen Intel(R) Core(TM) i7-1165G7 @ 2.80GHz",
+    "devices": {
+      "CPU": "11th Gen Intel(R) Core(TM) i7-1165G7 @ 2.80GHz",
+      "GPU": "Intel(R) Iris(R) Xe Graphics (iGPU)"
+    },
+    "openvino": "2026.3.1-22476-759c5a6ab8c-releases/2026/3",
+    "os": "Windows-11-10.0.26200-SP0"
+  }
+}

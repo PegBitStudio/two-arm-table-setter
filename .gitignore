@@ -1,0 +1,7 @@
+sim/out/
+brain/out/
+brain/*.wav
+train/data/
+__pycache__/
+.venv/
+.env

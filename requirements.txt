@@ -1,0 +1,12 @@
+mujoco==3.13.0
+openvino==2026.3.1
+openvino-genai==2026.3.1.0
+nncf
+numpy
+scipy==1.18.1
+pillow==12.3.0
+imageio==2.37.4
+huggingface_hub
+requests
+# training the ACT policy (Day 4) — pulls in PyTorch (CPU build is enough)
+lerobot[dataset,training]==0.6.1
