@@ -4,39 +4,46 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Core Ultra Setup Guide</title>
-<meta name="description" content="Step-by-step: set up and run the Two-Arm Table Setter on an Intel Core Ultra laptop.">
+<meta name="description" content="Step-by-step: let Claude Code set up and run the Two-Arm Table Setter on an Intel Core Ultra laptop.">
 <style>
-  :root { --bg:#161b22; --panel:#1f2630; --panel2:#262f3b; --text:#e8edf2; --mute:#9aa7b5; --accent:#e8b923; --ok:#4ade80; --warn:#f59e0b; --bad:#f87171; }
+  :root { --bg:#161b22; --panel:#1f2630; --panel2:#262f3b; --text:#e8edf2; --mute:#9aa7b5; --accent:#e8b923; --ok:#4ade80; --warn:#f59e0b; --claude:#c4b5fd; }
   * { box-sizing:border-box; }
   body { margin:0; background:var(--bg); color:var(--text); font:16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
   main { max-width:880px; margin:0 auto; padding:36px 20px 80px; }
   h1 { font-size:clamp(28px,4.5vw,40px); margin:0 0 6px; }
-  .lead { color:var(--mute); font-size:17px; margin:0 0 26px; }
+  .lead { color:var(--mute); font-size:17px; margin:0 0 22px; }
+  .who { display:flex; gap:12px; flex-wrap:wrap; margin:0 0 26px; }
+  .who span { background:var(--panel); border-radius:8px; padding:8px 12px; font-size:14px; }
+  .who b.you { color:var(--accent); } .who b.cc { color:var(--claude); }
   nav { background:var(--panel); border-radius:10px; padding:14px 18px; margin-bottom:28px; }
   nav ol { margin:6px 0 0; padding-left:22px; columns:2; column-gap:30px; }
   nav a { color:var(--text); text-decoration:none; } nav a:hover { color:var(--accent); }
   section { margin-top:40px; }
-  h2 { font-size:23px; margin:0 0 4px; display:flex; gap:12px; align-items:center; }
+  h2 { font-size:23px; margin:0 0 4px; display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
   h2 .n { flex:none; width:34px; height:34px; border-radius:50%; background:var(--accent); color:var(--bg);
           display:grid; place-items:center; font-size:16px; font-weight:800; }
+  .tag { font-size:13px; font-weight:600; padding:2px 9px; border-radius:20px; }
+  .tag.you { background:#3a3016; color:var(--accent); } .tag.cc { background:#2c2640; color:var(--claude); }
   .time { color:var(--mute); font-size:14px; margin:0 0 12px 46px; }
-  p, li { max-width:760px; }
-  .cmd { position:relative; background:#0d1117; border:1px solid #2e3743; border-radius:8px; margin:10px 0 16px; }
-  .cmd pre { margin:0; padding:12px 14px; overflow-x:auto; font:14px/1.5 Consolas, "Cascadia Mono", monospace; color:#f0e6c8; }
-  .cmd button { position:absolute; top:6px; right:6px; background:var(--panel2); color:var(--text); border:1px solid #3a4452;
-                border-radius:6px; font-size:12px; padding:4px 9px; cursor:pointer; }
-  .cmd button:hover { border-color:var(--accent); }
+  p, li { max-width:780px; }
+  .prompt { position:relative; background:#1b1829; border:1px solid #3b3358; border-radius:10px; margin:12px 0 16px; }
+  .prompt .label { font-size:12px; font-weight:700; letter-spacing:.4px; color:var(--claude); padding:10px 14px 0; }
+  .prompt pre { margin:0; padding:6px 14px 14px; white-space:pre-wrap; font:15px/1.55 system-ui, "Segoe UI", sans-serif; color:#ede9fe; }
+  .prompt button { position:absolute; top:8px; right:8px; background:#2c2640; color:var(--text); border:1px solid #4c4370;
+                   border-radius:6px; font-size:12px; padding:4px 10px; cursor:pointer; }
+  .prompt button:hover { border-color:var(--claude); }
   .box { border-radius:10px; padding:12px 16px; margin:14px 0; background:var(--panel); }
-  .box.tip { border-left:0; background:#1d2a22; } .box.tip b { color:var(--ok); }
+  .box.tip { background:#1d2a22; } .box.tip b { color:var(--ok); }
   .box.warn { background:#2c2416; } .box.warn b { color:var(--warn); }
-  .box.claude { background:#221f2e; } .box.claude b { color:#c4b5fd; }
-  .say { font-style:italic; color:#ddd6fe; }
   table { border-collapse:collapse; width:100%; }
   .scroll { overflow-x:auto; }
   th, td { text-align:left; padding:8px 10px; border-bottom:1px solid #2e3743; font-size:15px; vertical-align:top; }
   th { color:var(--accent); font-weight:600; }
   code { background:var(--panel2); padding:1px 6px; border-radius:4px; font-size:14px; }
   .check { list-style:none; padding-left:0; } .check li::before { content:"☐  "; color:var(--accent); }
+  details { background:var(--panel); border-radius:10px; padding:10px 16px; margin-top:12px; }
+  summary { cursor:pointer; color:var(--mute); }
+  details pre { background:#0d1117; border-radius:8px; padding:12px; overflow-x:auto; font:13px/1.5 Consolas, monospace; color:#f0e6c8; }
   a { color:var(--accent); }
   footer { color:var(--mute); font-size:14px; margin-top:50px; }
 </style>
@@ -44,200 +51,175 @@
 <body>
 <main>
   <h1>Core Ultra Setup Guide</h1>
-  <p class="lead">How to set up and run the Two-Arm Table Setter on your brother's Intel Core Ultra laptop — so the
-  final demo, the speed tests and the NPU results all come from the hardware Intel asked for.
-  Plan for <b>about 3–4 hours</b> in total, most of it waiting while things run.</p>
+  <p class="lead">Run the Two-Arm Table Setter on your brother's Intel Core Ultra laptop — with <b>Claude Code doing the
+  installing, downloading and running</b>. You only click through a few Windows settings and paste messages.
+  Plan for <b>about 3–4 hours</b>, mostly waiting.</p>
+
+  <div class="who">
+    <span><b class="you">YOU</b> — Windows settings, install the Claude app, click "Yes" on permission pop-ups</span>
+    <span><b class="cc">CLAUDE CODE</b> — installs tools, downloads, runs every test, films, uploads</span>
+  </div>
 
   <nav><b>Steps</b>
     <ol>
       <li><a href="#s1">Prepare the laptop</a></li>
-      <li><a href="#s2">Install the tools</a></li>
-      <li><a href="#s3">Get the project</a></li>
-      <li><a href="#s4">Set up Claude Code</a></li>
-      <li><a href="#s5">Quick check (10 min)</a></li>
-      <li><a href="#s6">Full test with the NPU</a></li>
-      <li><a href="#s7">Try the NPU for the AI parts</a></li>
-      <li><a href="#s8">Film the demo on Core Ultra</a></li>
-      <li><a href="#s9">Voice demo (optional)</a></li>
-      <li><a href="#s10">Update GitHub and the submission</a></li>
-      <li><a href="#s11">Clean up and hand it back</a></li>
+      <li><a href="#s2">Install the Claude app</a></li>
+      <li><a href="#s3">Claude sets everything up</a></li>
+      <li><a href="#s4">Quick check</a></li>
+      <li><a href="#s5">Full test with the NPU</a></li>
+      <li><a href="#s6">Try the NPU for the AI parts</a></li>
+      <li><a href="#s7">Film the demo on Core Ultra</a></li>
+      <li><a href="#s8">Voice demo (optional)</a></li>
+      <li><a href="#s9">Update GitHub and the submission</a></li>
+      <li><a href="#s10">Clean up and hand it back</a></li>
     </ol>
   </nav>
 
-  <div class="box"><b>Why bother?</b> Intel's brief says the final demo should run on a Core Ultra Series 2 or 3,
-  and 20 of the 100 points are for OpenVINO optimisation on that hardware — including its NPU (a chip made for AI).
+  <div class="box"><b>Why bother?</b> Intel's brief says the final demo should run on a Core Ultra Series 2 or 3, and
+  20 of the 100 points are for OpenVINO optimisation on that hardware — including its NPU (a chip made for AI).
   Our own laptop is an older i7 with no NPU. This laptop closes that gap.</div>
 
   <!-- 1 -->
   <section id="s1">
-    <h2><span class="n">1</span>Prepare the laptop</h2>
-    <p class="time">about 20 minutes</p>
+    <h2><span class="n">1</span>Prepare the laptop <span class="tag you">YOU</span></h2>
+    <p class="time">about 20 minutes · no typing</p>
     <ol>
       <li><b>Plug it in</b> and keep it plugged in the whole time — speed results change a lot on battery.</li>
-      <li><b>Confirm it's a Core Ultra:</b> Settings → System → About → <i>Processor</i> should say
-        "Intel Core Ultra". Series 2 models have a 200-number in the name (for example "Core Ultra 7 258V").</li>
-      <li><b>Check the NPU is there:</b> press <code>Ctrl + Shift + Esc</code> → Performance tab. You should see
-        <b>NPU</b> in the list on the left (next to CPU, Memory, GPU).</li>
-      <li><b>Update drivers:</b> Settings → Windows Update → Check for updates, then Advanced options →
-        Optional updates → install any Intel items (graphics, NPU). Restart if asked.</li>
-      <li><b>Stop sleep:</b> Settings → System → Power &amp; battery → Screen and sleep → set
-        "When plugged in, put my device to sleep after" to <b>Never</b>. Write down the old setting to restore later.</li>
-      <li><b>Free space:</b> you need about <b>10 GB</b> free on drive C.</li>
+      <li><b>Confirm it's a Core Ultra:</b> Settings → System → About → <i>Processor</i> should say "Intel Core Ultra"
+        (Series 2 models have a 200-number, for example "Core Ultra 7 258V").</li>
+      <li><b>Check the NPU:</b> press <code>Ctrl + Shift + Esc</code> → <i>Performance</i>. You should see <b>NPU</b>
+        in the list on the left, next to CPU, Memory and GPU.</li>
+      <li><b>Update drivers:</b> Settings → Windows Update → <i>Check for updates</i>, then <i>Advanced options →
+        Optional updates</i> → install any Intel items. Restart if asked.</li>
+      <li><b>Stop sleep:</b> Settings → System → Power &amp; battery → Screen and sleep → "When plugged in, put my device
+        to sleep after" → <b>Never</b>. Note the old setting so you can put it back.</li>
+      <li><b>Space:</b> about <b>10 GB</b> free on drive C.</li>
+      <li><b>Make a work folder:</b> open File Explorer → <i>This PC</i> → <i>Local Disk (C:)</i> → right-click →
+        New → Folder → name it <code>work</code>. (Not Documents or Desktop — OneDrive may try to upload thousands of files.)</li>
     </ol>
-    <div class="box warn"><b>No NPU in Task Manager?</b> The laptop may be older than Series 1, or the NPU driver is missing.
-    Install the Intel NPU driver from intel.com ("Intel NPU driver Windows"). You can still continue — CPU and GPU results count too.</div>
+    <div class="box warn"><b>No NPU in Task Manager?</b> The NPU driver may be missing — search intel.com for
+      "Intel NPU driver Windows" and install it. You can still carry on; CPU and GPU results count too.</div>
   </section>
 
   <!-- 2 -->
   <section id="s2">
-    <h2><span class="n">2</span>Install the tools</h2>
-    <p class="time">about 15 minutes</p>
-    <p>Open <b>PowerShell</b> (Start → type <code>powershell</code> → Enter) and paste these one at a time:</p>
-    <div class="cmd"><pre>winget install -e --id Python.Python.3.12
-winget install -e --id Git.Git
-winget install -e --id GitHub.cli</pre></div>
-    <p>Then install the <b>Claude desktop app</b> from <a href="https://claude.ai/download">claude.ai/download</a>
-      (it includes Claude Code). <b>Close and reopen PowerShell</b> afterwards so it finds the new tools.</p>
-    <div class="box tip"><b>Check it worked:</b> <code>py -3.12 --version</code> should print 3.12.x and
-      <code>git --version</code> a version number.</div>
+    <h2><span class="n">2</span>Install the Claude app <span class="tag you">YOU</span></h2>
+    <p class="time">about 5 minutes</p>
+    <ol>
+      <li>In the browser, go to <a href="https://claude.ai/download">claude.ai/download</a>, download the Windows app and install it.</li>
+      <li>Open it and <b>sign in with your own account</b>.</li>
+      <li>Go to the <b>Code</b> tab and choose the folder <code>C:\work</code> as the project folder.</li>
+    </ol>
+    <div class="box warn"><b>Remember:</b> it's your brother's laptop. You'll sign out at the end (step 10). Never paste
+      passwords or API keys into the chat.</div>
   </section>
 
   <!-- 3 -->
   <section id="s3">
-    <h2><span class="n">3</span>Get the project</h2>
-    <p class="time">about 20 minutes (mostly downloads)</p>
-    <p>Use <code>C:\work</code> — <b>not</b> Documents or Desktop, which OneDrive may try to upload (thousands of files).</p>
-    <div class="cmd"><pre>mkdir C:\work
-cd C:\work
-git clone https://github.com/PegBitStudio/two-arm-table-setter.git
-cd two-arm-table-setter
-py -3.12 -m venv .venv
-.venv\Scripts\python -m pip install --upgrade pip
-.venv\Scripts\python -m pip install -r requirements.txt</pre></div>
-    <p>The last line downloads about 1.5 GB of libraries and takes 5–15 minutes. Then download the two AI models:</p>
-    <div class="cmd"><pre>.venv\Scripts\python brain\get_model.py
-.venv\Scripts\python bench\get_policy.py</pre></div>
-    <p>That's the vision-language model (3.1 GB) and our trained robot policy (45 MB), stored in
-      <code>C:\Users\&lt;name&gt;\.models</code>.</p>
+    <h2><span class="n">3</span>Claude sets everything up <span class="tag cc">CLAUDE CODE</span></h2>
+    <p class="time">about 30–45 minutes · you only click "Yes" on pop-ups</p>
+    <p>Paste this into Claude Code:</p>
+    <div class="prompt"><div class="label">PASTE TO CLAUDE CODE</div><pre>We're on my brother's Intel Core Ultra laptop, in C:\work. Please set up my project here, doing all the commands yourself:
+1. Install Python 3.12, Git and GitHub CLI with winget if they're missing (I'll click Yes on any Windows pop-ups).
+2. Clone https://github.com/PegBitStudio/two-arm-table-setter.git into C:\work\two-arm-table-setter.
+3. Read HANDOFF.md and docs/core_ultra_setup.html in that folder — they explain the project and this plan.
+4. Create a Python 3.12 virtual environment in .venv inside the project and install requirements.txt.
+5. Download the AI model (brain/get_model.py) and the trained policy (bench/get_policy.py).
+6. Show me which Intel devices OpenVINO sees (CPU, GPU, NPU).
+Keep your answers short and simple, and tell me when it's done.</pre></div>
+    <div class="box tip"><b>What to expect:</b> Windows may show a few "Do you want to allow this app to make changes?"
+      pop-ups while tools install — click <b>Yes</b>. The downloads are about 5 GB in total. Claude may need to restart
+      the chat once after installing Git — if it asks, close and reopen the Claude app and say
+      <i>"continue the setup from step 2"</i>.</div>
   </section>
 
   <!-- 4 -->
   <section id="s4">
-    <h2><span class="n">4</span>Set up Claude Code</h2>
-    <p class="time">about 5 minutes</p>
-    <p>Open the Claude app, <b>sign in with your own account</b>, go to the <b>Code</b> tab and open the folder
-      <code>C:\work\two-arm-table-setter</code>. Then paste this as your first message:</p>
-    <div class="box claude"><b>Say to Claude:</b>
-      <p class="say">Read HANDOFF.md, then docs/core_ultra_setup.html. We're now on my brother's Intel Core Ultra
-      laptop, set up in C:\work\two-arm-table-setter with the environment in .venv. Check the setup works, then
-      help me run steps 5 to 10 of the guide. Keep answers short and simple.</p></div>
-    <div class="box warn"><b>Important:</b> this is your brother's laptop. Sign out of Claude and GitHub before you
-      hand it back (step 11). Never paste passwords or API keys into the chat.</div>
+    <h2><span class="n">4</span>Quick check <span class="tag cc">CLAUDE CODE</span></h2>
+    <p class="time">about 10 minutes</p>
+    <div class="prompt"><div class="label">PASTE TO CLAUDE CODE</div><pre>Run the quick check: .venv\Scripts\python bench\volunteer.py --quick
+Tell me whether it found CPU, GPU and NPU, whether all 3 tables were set correctly, and if anything failed, fix it.</pre></div>
+    <p>Small black windows may flash — that's the simulator drawing camera pictures. That's normal.</p>
   </section>
 
   <!-- 5 -->
   <section id="s5">
-    <h2><span class="n">5</span>Quick check</h2>
-    <p class="time">about 10 minutes</p>
-    <div class="cmd"><pre>.venv\Scripts\python bench\volunteer.py --quick</pre></div>
-    <p>What you should see:</p>
-    <ul class="check">
-      <li>Step 1 lists <b>CPU</b>, <b>GPU</b> and <b>NPU</b> with their names</li>
-      <li>Speed numbers for the trained policy on each chip</li>
-      <li>"3/3 tables fully set"</li>
-      <li>"Done. Please send this file back" — it made <code>volunteer_results.zip</code></li>
-    </ul>
-    <p>Small black windows may flash — that's the simulator drawing camera pictures. If anything fails, ask Claude
-      Code: <span class="say">"Step 5 failed — here's the error, fix it."</span></p>
-  </section>
-
-  <!-- 6 -->
-  <section id="s6">
-    <h2><span class="n">6</span>Full test with the NPU</h2>
-    <p class="time">45–60 minutes — let it run</p>
-    <div class="cmd"><pre>.venv\Scripts\python bench\volunteer.py</pre></div>
-    <p>This measures every AI part on every chip (CPU, GPU, NPU), checks that speeding them up doesn't hurt the robot,
-      and sets 10 hard random tables with the full robot. Results land in the <code>volunteer_results</code>
-      folder and <code>volunteer_results.zip</code>.</p>
+    <h2><span class="n">5</span>Full test with the NPU <span class="tag cc">CLAUDE CODE</span></h2>
+    <p class="time">45–60 minutes · no need to watch</p>
+    <div class="prompt"><div class="label">PASTE TO CLAUDE CODE</div><pre>Now run the full test in the background: .venv\Scripts\python bench\volunteer.py
+It measures every AI part on every chip and sets 10 hard tables. Keep the computer awake while it runs. When it finishes, give me a short summary: fastest chip for each part, the NPU numbers, and how many tables were set correctly.</pre></div>
     <div class="scroll"><table>
       <tr><th>Part</th><th>What it tells the judges</th></tr>
       <tr><td>ACT policy × CPU / GPU / NPU × FP32 / FP16 / INT8</td><td>Speed on Core Ultra, and which chip suits a small robot model</td></tr>
       <tr><td>Task check on each chip</td><td>"Optimisation didn't break the robot" (Intel asks for this)</td></tr>
-      <tr><td>Qwen3-VL on each chip × 3 picture sizes</td><td>Speed of understanding a command, on the NPU too</td></tr>
+      <tr><td>Qwen3-VL on each chip × 3 picture sizes</td><td>How fast it understands a command, NPU included</td></tr>
       <tr><td>10 hard tables</td><td>The whole robot working on Core Ultra</td></tr>
     </table></div>
   </section>
 
+  <!-- 6 -->
+  <section id="s6">
+    <h2><span class="n">6</span>Try the NPU for the AI parts <span class="tag cc">CLAUDE CODE</span></h2>
+    <p class="time">about 15 minutes</p>
+    <div class="prompt"><div class="label">PASTE TO CLAUDE CODE</div><pre>Try the NPU in the real robot:
+1. brain\run.py --seed 3 --policy --policy-device NPU "put the cup to the right of the plate"
+2. brain\run.py --seed 3 --device NPU "set the table"
+Tell me if each one really ran on the NPU (the output says which device loaded) and if the table was set correctly. Then, from volunteer_results\results.json, pick the best device for the vision-language model and for the policy for the demo video.</pre></div>
+    <div class="box tip"><b>If the vision-language model falls back to CPU</b>, it simply doesn't run on this NPU yet —
+      that's a fine, honest result, and the GPU will be used for the video.</div>
+  </section>
+
   <!-- 7 -->
   <section id="s7">
-    <h2><span class="n">7</span>Try the NPU for the AI parts</h2>
-    <p class="time">about 15 minutes</p>
-    <p>Run the robot with the trained policy on the NPU, and the vision-language model on the NPU:</p>
-    <div class="cmd"><pre>.venv\Scripts\python brain\run.py --seed 3 --policy --policy-device NPU "put the cup to the right of the plate"
-.venv\Scripts\python brain\run.py --seed 3 --device NPU "set the table"</pre></div>
-    <p>Look for <i>"Trained ACT policy loaded (OpenVINO FP16, NPU)"</i> and <i>"AI model loaded on NPU"</i>.
-      If the second one says <b>CPU</b> instead, this model doesn't run on the NPU yet — that's a fine, honest result;
-      use <code>--device GPU</code> for it.</p>
-    <div class="box claude"><b>Say to Claude:</b>
-      <p class="say">Look at volunteer_results/results.json. Which chip is fastest for the ACT policy and for Qwen3-VL on this
-      laptop, and did any precision lose accuracy? Pick the best device for each part for the demo video.</p></div>
+    <h2><span class="n">7</span>Film the demo on Core Ultra <span class="tag cc">CLAUDE CODE</span></h2>
+    <p class="time">about 1 hour · no need to watch</p>
+    <div class="prompt"><div class="label">PASTE TO CLAUDE CODE</div><pre>Film the submission video on this laptop, using the best devices from the last step, in the background and keeping the computer awake:
+1. From the brain folder: make_video.py --seeds 10 --start 100 --hard --model --device BEST --out out\demo_10_tables.mp4
+2. make_video.py --seeds 1 --start 3 --bump plate --out out\recovery.mp4
+3. From the project folder: submission\make_final_video.py --results volunteer_results\results.json
+Then check a few frames: the cards should say it's running on the Intel Core Ultra, and show the NPU numbers.</pre></div>
+    <p>The finished video is <code>submission\two_arm_table_setter_demo.mp4</code> — the laptop's name is filled in
+      automatically.</p>
   </section>
 
   <!-- 8 -->
   <section id="s8">
-    <h2><span class="n">8</span>Film the demo on Core Ultra</h2>
-    <p class="time">about 1 hour — let it run</p>
-    <p>Replace <code>GPU</code> / <code>CPU</code> below with the best devices from step 7:</p>
-    <div class="cmd"><pre>cd brain
-..\.venv\Scripts\python make_video.py --seeds 10 --start 100 --hard --model --device GPU --out out\demo_10_tables.mp4
-..\.venv\Scripts\python make_video.py --seeds 1 --start 3 --bump plate --out out\recovery.mp4
-cd ..
-.venv\Scripts\python submission\make_final_video.py --results volunteer_results\results.json</pre></div>
-    <p>The finished video is <code>submission\two_arm_table_setter_demo.mp4</code>. Its cards now say
-      <b>"running on Intel Core Ultra …"</b> and show the NPU numbers — the name is read from the laptop automatically.</p>
+    <h2><span class="n">8</span>Voice demo (optional) <span class="tag you">YOU</span> + <span class="tag cc">CLAUDE CODE</span></h2>
+    <p class="time">about 10 minutes</p>
+    <p>Your Speechmatics key should never go into the chat. Add it through Windows settings — no PowerShell:</p>
+    <ol>
+      <li>Start → type <b>environment variables</b> → open <i>"Edit environment variables for your account"</i>.</li>
+      <li>Under <i>User variables</i> click <b>New…</b> → Name: <code>SPEECHMATICS_API_KEY</code> → Value: your key → OK → OK.
+        (Your key is on portal.speechmatics.com under API keys.)</li>
+      <li><b>Close and reopen the Claude app</b> so it sees the key.</li>
+    </ol>
+    <div class="prompt"><div class="label">PASTE TO CLAUDE CODE</div><pre>Check that SPEECHMATICS_API_KEY is set (don't show it), then run: brain\run.py --seed 5 --audio brain\test_command.wav
+Tell me what it heard and whether the table was set.</pre></div>
   </section>
 
   <!-- 9 -->
   <section id="s9">
-    <h2><span class="n">9</span>Voice demo (optional)</h2>
-    <p class="time">about 10 minutes</p>
-    <p>Your Speechmatics key is on your own PC only. To use it here, open PowerShell <b>yourself</b> (not through Claude) and run:</p>
-    <div class="cmd"><pre>setx SPEECHMATICS_API_KEY "paste-your-key-here"</pre></div>
-    <p>Close and reopen the Claude app so it sees the key, then:</p>
-    <div class="cmd"><pre>.venv\Scripts\python brain\run.py --seed 5 --audio brain\test_command.wav</pre></div>
-    <p>If <code>test_command.wav</code> is missing, ask Claude Code to make one with Windows speech, or record yourself
-      saying "Please set the table" with the Sound Recorder app.</p>
+    <h2><span class="n">9</span>Update GitHub and the submission <span class="tag cc">CLAUDE CODE</span></h2>
+    <p class="time">30–45 minutes</p>
+    <p><b>Option A (simplest):</b> let Claude upload from this laptop. It will open a browser window for you to approve
+      the GitHub sign-in.</p>
+    <div class="prompt"><div class="label">PASTE TO CLAUDE CODE</div><pre>Sign in to GitHub with gh auth login --web (I'll approve it in the browser). Then add the Core Ultra results from volunteer_results to bench/RESULTS.md, the README, the slides and the demo page (docs/index.html), replace the demo page video (docs/media/demo.mp4) with the new Core Ultra video, and push everything. Keep the old i7 numbers too, clearly labelled, so we show both laptops.</pre></div>
+    <p><b>Option B (no GitHub sign-in here):</b> ask Claude to copy <code>volunteer_results.zip</code> and
+      <code>submission\two_arm_table_setter_demo.mp4</code> to a USB stick or your Google Drive folder, then give them to
+      Claude Code on your own PC with the same request.</p>
   </section>
 
   <!-- 10 -->
   <section id="s10">
-    <h2><span class="n">10</span>Update GitHub and the submission</h2>
-    <p class="time">30–45 minutes</p>
-    <p><b>Safest:</b> copy these to a USB stick or Google Drive and bring them to your own PC, then let Claude Code there
-      update and upload everything:</p>
-    <ul>
-      <li><code>volunteer_results.zip</code></li>
-      <li><code>submission\two_arm_table_setter_demo.mp4</code></li>
-    </ul>
-    <div class="box claude"><b>Say to Claude (on your PC):</b>
-      <p class="say">Here are the Core Ultra results (volunteer_results.zip) and the new demo video. Add the Core Ultra numbers
-      to bench/RESULTS.md, the README, the slides and the demo page, put the new video on the demo page, and push to GitHub.</p></div>
-    <p><b>Or, from the Core Ultra laptop:</b> run <code>gh auth login</code>, sign in to GitHub in the browser window,
-      and ask Claude Code there to do the same. Remember to sign out in step 11.</p>
-  </section>
-
-  <!-- 11 -->
-  <section id="s11">
-    <h2><span class="n">11</span>Clean up and hand it back</h2>
+    <h2><span class="n">10</span>Clean up and hand it back <span class="tag cc">CLAUDE CODE</span> then <span class="tag you">YOU</span></h2>
     <p class="time">about 10 minutes</p>
+    <div class="prompt"><div class="label">PASTE TO CLAUDE CODE</div><pre>We're done on this laptop. Make sure everything is pushed or copied off first. Then clean up: sign out of GitHub (gh auth logout), remove the SPEECHMATICS_API_KEY user variable if it exists, delete the .models folder in my user folder and the .venv folder in the project, and tell me what's left for me to do by hand.</pre></div>
+    <p>Then, yourself:</p>
     <ul class="check">
-      <li>Copy your results off the laptop first (step 10)</li>
-      <li>Claude app → your profile → <b>Log out</b></li>
-      <li>If you signed in to GitHub: <code>gh auth logout</code></li>
-      <li>Remove the Speechmatics key (if you added it): run <code>REG delete HKCU\Environment /F /V SPEECHMATICS_API_KEY</code></li>
-      <li>Delete <code>C:\work\two-arm-table-setter</code> and <code>C:\Users\&lt;name&gt;\.models</code> (about 5 GB)</li>
+      <li>Claude app → your profile → <b>Log out</b>, then close it</li>
+      <li>Delete the <code>C:\work</code> folder in File Explorer</li>
       <li>Put the sleep setting back to what it was</li>
-      <li>Optional: uninstall Python 3.12, Git and GitHub CLI from Settings → Apps</li>
+      <li>Optional: uninstall the Claude app, Python 3.12, Git and GitHub CLI from Settings → Apps</li>
     </ul>
   </section>
 
@@ -245,22 +227,47 @@ cd ..
     <h2>Time plan</h2>
     <div class="scroll"><table>
       <tr><th>Step</th><th>Time</th><th>You need to watch?</th></tr>
-      <tr><td>1–4 Prepare, install, download, Claude Code</td><td>~1 hour</td><td>Yes, on and off</td></tr>
-      <tr><td>5 Quick check</td><td>10 min</td><td>Glance at the end</td></tr>
-      <tr><td>6 Full test</td><td>45–60 min</td><td>No</td></tr>
-      <tr><td>7 NPU tries</td><td>15 min</td><td>Yes</td></tr>
-      <tr><td>8 Film the demo</td><td>~1 hour</td><td>No</td></tr>
-      <tr><td>9–11 Voice, update, clean up</td><td>~1 hour</td><td>Yes</td></tr>
+      <tr><td>1–2 Prepare laptop, install Claude</td><td>~25 min</td><td>Yes</td></tr>
+      <tr><td>3 Claude sets up</td><td>30–45 min</td><td>Only for pop-ups</td></tr>
+      <tr><td>4 Quick check</td><td>10 min</td><td>Glance at the end</td></tr>
+      <tr><td>5 Full test</td><td>45–60 min</td><td>No</td></tr>
+      <tr><td>6 NPU tries</td><td>15 min</td><td>Read the summary</td></tr>
+      <tr><td>7 Film the demo</td><td>~1 hour</td><td>No</td></tr>
+      <tr><td>8–10 Voice, update, clean up</td><td>~1 hour</td><td>A little</td></tr>
     </table></div>
-    <p><b>Deadline:</b> the lablab submission closes <b>Wednesday 16 September, 7:30 PM WAT</b>. Aim to finish step 10 by
-      Wednesday morning, and submit by 3 PM.</p>
+    <p><b>Deadline:</b> the lablab submission closes <b>Wednesday 16 September, 7:30 PM WAT</b>. Aim to finish step 9 by
+      Wednesday morning and submit by 3 PM.</p>
   </section>
+
+  <details>
+    <summary>The commands Claude will run (for reference, or to do it by hand)</summary>
+<pre>winget install -e --id Python.Python.3.12
+winget install -e --id Git.Git
+winget install -e --id GitHub.cli
+cd C:\work
+git clone https://github.com/PegBitStudio/two-arm-table-setter.git
+cd two-arm-table-setter
+py -3.12 -m venv .venv
+.venv\Scripts\python -m pip install --upgrade pip
+.venv\Scripts\python -m pip install -r requirements.txt
+.venv\Scripts\python brain\get_model.py
+.venv\Scripts\python bench\get_policy.py
+.venv\Scripts\python bench\volunteer.py --quick
+.venv\Scripts\python bench\volunteer.py
+.venv\Scripts\python brain\run.py --seed 3 --policy --policy-device NPU "put the cup to the right of the plate"
+.venv\Scripts\python brain\run.py --seed 3 --device NPU "set the table"
+cd brain
+..\.venv\Scripts\python make_video.py --seeds 10 --start 100 --hard --model --device GPU --out out\demo_10_tables.mp4
+..\.venv\Scripts\python make_video.py --seeds 1 --start 3 --bump plate --out out\recovery.mp4
+cd ..
+.venv\Scripts\python submission\make_final_video.py --results volunteer_results\results.json</pre>
+  </details>
 
   <footer>Two-Arm Table Setter · <a href="index.html">demo page</a> ·
     <a href="https://github.com/PegBitStudio/two-arm-table-setter">GitHub</a></footer>
 </main>
 <script>
-  document.querySelectorAll(".cmd").forEach(box => {
+  document.querySelectorAll(".prompt").forEach(box => {
     const b = document.createElement("button");
     b.textContent = "Copy";
     b.onclick = () => {

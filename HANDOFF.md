@@ -83,6 +83,11 @@ The user's **brother's Intel Core Ultra laptop** is being lent to the user, who 
 personally with Claude Code. Step-by-step guide: **`docs/core_ultra_setup.html`** (also on the demo site:
 https://pegbitstudio.github.io/two-arm-table-setter/core_ultra_setup.html).
 
+- **The user wants Claude Code to run every command** (installs via winget, clone, venv, downloads,
+  tests) — they don't want to open PowerShell. They only do Windows settings, install the Claude app,
+  and click "Yes" on UAC pop-ups. The guide gives them a prompt to paste for each step.
+- The Speechmatics key is added by the user through Windows "Edit environment variables for your
+  account" — never through the chat.
 - Project at `C:\work\two-arm-table-setter`, environment in `.venv` there (not the paths above).
 - Run order: `bench/volunteer.py --quick` → `bench/volunteer.py` (results in `volunteer_results/`) →
   try NPU (`run.py --device NPU`, `--policy --policy-device NPU`) → film with `make_video.py ... --device <best>`
