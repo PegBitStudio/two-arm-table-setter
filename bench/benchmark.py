@@ -139,14 +139,23 @@ def add_throughput(rows):
         r["speedup_vs_pytorch"] = round(base / r["ms_per_call"], 2)
 
 
-def bench_act_task(episodes=10):
-    """Does optimisation keep the robot working? Same unseen tables for every precision."""
+def bench_act_task(episodes=10, devices=("CPU",)):
+    """Does optimisation keep the robot working? Same unseen tables for every precision and
+    device: all precisions on the CPU, FP16 and INT8 on the iGPU / NPU when present."""
     import eval_policy
     from export_act import OpenVINORunner, RUN, ckpt_of
 
     runners = {"PyTorch FP32": eval_policy.TorchRunner(ckpt_of(RUN))}
     for prec in ("fp32", "fp16", "int8", "int8w"):
         runners[f"OpenVINO {prec.upper()} (CPU)"] = OpenVINORunner(ckpt_of(RUN), "CPU", prec)
+    for dev in devices:
+        if dev == "CPU":
+            continue
+        for prec in ("fp16", "int8"):
+            try:
+                runners[f"OpenVINO {prec.upper()} ({dev})"] = OpenVINORunner(ckpt_of(RUN), dev, prec)
+            except RuntimeError as ex:
+                print(f"  {prec} on {dev}: {str(ex)[:120]}")
     rows = []
     for name, runner in runners.items():
         results = [eval_policy.run_episode(runner, eval_policy.EVAL_SEED0 + i) for i in range(episodes)]
@@ -216,7 +225,7 @@ def main():
         elif part == "act":
             res["parts"]["act"] = bench_act(devices)
         elif part == "act_task":
-            res["parts"]["act_task"] = bench_act_task()
+            res["parts"]["act_task"] = bench_act_task(devices=devices)
         else:
             res["parts"]["perception"] = bench_perception()
     path.write_text(json.dumps(res, indent=2))

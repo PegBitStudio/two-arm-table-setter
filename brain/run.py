@@ -61,6 +61,8 @@ def main():
     p.add_argument("--hard", action="store_true", help="wider randomisation of the table")
     p.add_argument("--policy", action="store_true",
                    help="let the trained ACT policy (OpenVINO) move the mug where it was trained to")
+    p.add_argument("--policy-device", default="CPU", help="OpenVINO device for the policy (CPU/GPU/NPU)")
+    p.add_argument("--policy-precision", default="fp16", choices=["fp32", "fp16", "int8", "int8w"])
     p.add_argument("--bump", metavar="OBJECT",
                    help="recovery demo: knock this object ~6 cm sideways once it has been placed "
                         "and the next item is done, to show the robot noticing and fixing it")
@@ -78,8 +80,8 @@ def main():
     sim = day2_demo.start_sim(args.seed, video=args.video, eyes="camera", hard=args.hard)
     if args.policy:
         import policy_skill
-        sim.policy = policy_skill.load()
-        print("Trained ACT policy loaded (OpenVINO FP16, CPU)")
+        sim.policy = policy_skill.load(device=args.policy_device, precision=args.policy_precision)
+        print(f"Trained ACT policy loaded (OpenVINO {args.policy_precision.upper()}, {args.policy_device})")
     try:
         skills.observe(sim)
         print(f"Camera sees: {', '.join(sorted(sim.world))}")

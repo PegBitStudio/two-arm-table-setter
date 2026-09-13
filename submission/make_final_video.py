@@ -50,37 +50,63 @@ def write(frames, path):
             w.write_frame(f)
 
 
+def hw_label(res) -> str:
+    """Short hardware name from the benchmark results (never hard-coded)."""
+    from hardware import _short
+
+    devs = res["hardware"]["devices"]
+    parts = [_short(res["hardware"]["cpu"])]
+    if "GPU" in devs:
+        parts.append(_short(devs["GPU"]).replace("Intel ", ""))
+    if "NPU" in devs:
+        parts.append("NPU")
+    return " + ".join(parts)
+
+
 def main():
-    res = json.loads((ROOT / "bench" / "results.json").read_text())
+    import argparse
+
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--results", type=Path, default=ROOT / "bench" / "results.json",
+                    help="benchmark results to show (e.g. volunteer_results/results.json)")
+    ap.add_argument("--demo", type=Path, default=TMP / "demo_10_tables.mp4")
+    args = ap.parse_args()
+    res = json.loads(args.results.read_text())
+    hw = hw_label(res)
     act = {(r["backend"], r["precision"], r["device"]): r for r in res["parts"]["act"]}
-    task = {r["policy"]: r for r in res["parts"]["act_task"]}
-    vlm = {(r["device"], r["image_width"]): r for r in res["parts"]["vlm"]}
+    task = {r["policy"]: r for r in res["parts"].get("act_task", [])}
+    vlm = {(r["device"], r["image_width"]): r for r in res["parts"].get("vlm", [])}
+    devices = [d for d in ("CPU", "GPU", "NPU") if d in res["hardware"]["devices"]]
 
     rows = []
-    for label, key, tkey in [("PyTorch FP32", ("PyTorch", "FP32", "CPU"), "PyTorch FP32"),
-                             ("OpenVINO FP32", ("OpenVINO", "FP32", "CPU"), "OpenVINO FP32 (CPU)"),
-                             ("OpenVINO FP16", ("OpenVINO", "FP16", "CPU"), "OpenVINO FP16 (CPU)"),
-                             ("OpenVINO INT8", ("OpenVINO", "INT8", "CPU"), "OpenVINO INT8 (CPU)"),
-                             ("OpenVINO INT8 weights", ("OpenVINO", "INT8W", "CPU"), "OpenVINO INT8W (CPU)")]:
-        a = act[key]
+    wanted = [("PyTorch FP32", "PyTorch", "FP32", "CPU"), ("OpenVINO FP32", "OpenVINO", "FP32", "CPU"),
+              ("OpenVINO FP16", "OpenVINO", "FP16", "CPU"), ("OpenVINO INT8", "OpenVINO", "INT8", "CPU"),
+              ("OpenVINO INT8 weights", "OpenVINO", "INT8W", "CPU")]
+    wanted += [(f"OpenVINO {p} ({d})", "OpenVINO", p, d) for d in devices if d != "CPU" for p in ("FP16", "INT8")]
+    for label, backend, prec, dev in wanted:
+        a = act.get((backend, prec, dev))
+        if a is None:
+            continue
+        tkey = "PyTorch FP32" if backend == "PyTorch" else f"OpenVINO {prec} ({dev})"
         rows.append([label, f"{a['ms_per_call']:.2f} ms", f"{a['calls_per_s']:.0f}/s",
-                     f"{a['speedup_vs_pytorch']:.1f}x", task[tkey]["within_1_5cm"]])
-    act_card = table_card("Trained ACT policy on OpenVINO (CPU)",
-                          ["backend", "latency", "throughput", "speed-up", "mug placed"], rows,
-                          "Intel Core i7-1165G7 - task success unchanged by optimisation (10 unseen tables)")
-    vrows = [[f"{w} px", f"{vlm[('CPU', w)]['s_per_command']} s", f"{vlm[('GPU', w)]['s_per_command']} s",
-              f"{vlm[('GPU', w)]['first_token_ms'] / 1000:.1f} s", vlm[("GPU", w)]["correct"]]
+                     f"{a['speedup_vs_pytorch']:.1f}x", task.get(tkey, {}).get("within_1_5cm", "-")])
+    act_card = table_card("Trained ACT policy on OpenVINO",
+                          ["backend", "latency", "throughput", "speed-up", "mug placed"], rows[:8],
+                          f"{hw} - task success checked on 10 unseen tables", seconds=7)
+    vdevs = [d for d in devices if any(k[0] == d for k in vlm)]
+    vrows = [[f"{w} px"] + [f"{vlm[(d, w)]['s_per_command']} s" if (d, w) in vlm else "-" for d in vdevs]
+             + [min((vlm[(d, w)]["correct"] for d in vdevs if (d, w) in vlm), default="-")]
              for w in (320, 480, 960)]
     vlm_card = table_card("Qwen3-VL-4B INT4 on OpenVINO GenAI",
-                          ["picture width", "CPU", "iGPU", "iGPU 1st word", "correct"], vrows,
-                          "seconds per command - the Iris Xe iGPU halves it for large pictures; tuning took it from 30 s to 4 s")
+                          ["picture width"] + [{"GPU": "iGPU"}.get(d, d) for d in vdevs] + ["correct"], vrows,
+                          f"seconds per command on {hw}")
 
     pieces = [
-        TMP / "demo_10_tables.mp4",
+        args.demo,
         ("rec_intro", card(["Recovery", "Mid-task, someone knocks the plate out of place"],
                            sub="the robot looks again after every item", seconds=3)),
         ("recovery_trim", None),
-        ("bench", card(["Intel optimisation", "measured on this laptop"], sub="bench/benchmark.py", seconds=2)
+        ("bench", card(["Intel optimisation", f"measured on {hw}"], sub="bench/benchmark.py", seconds=2)
          + act_card + vlm_card),
         ("end", card(["Two-Arm Table Setter", "github.com/PegBitStudio/two-arm-table-setter"],
                      sub="MuJoCo - LeRobot ACT - OpenVINO - Qwen3-VL - SO-101", seconds=4)),

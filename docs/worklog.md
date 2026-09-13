@@ -222,3 +222,19 @@ upload (YouTube); narration (optional); final form submission before 16 Sep 19:3
 - WhatsApp status clip `submission/status_clip.mp4` (23 s vertical, `make_status_clip.py`) asking
   for Core Ultra volunteers.
 - Next option: live listening (microphone → Speechmatics real-time → robot) for the bonus.
+
+## 2026-09-13 (night) — ready for the Core Ultra laptop
+
+- User's brother has a Core Ultra laptop and is lending it; the user will run everything on it
+  with their own Claude Code account. Advised against sharing the Claude account or GitHub access.
+  Solo teams are allowed on lablab (1–5 members); the brother may join the team.
+- Trained policy published as GitHub release `policy-v7` (45 MB); `bench/get_policy.py`
+  downloads it; shipped checkpoints carry `env_names.json` (no training data needed).
+- `bench/volunteer.py` (one command, results zip, separate `BENCH_OUT` folder so they never mix
+  with our numbers) — quick mode tested end to end here.
+- Pre-flight fixes for the Core Ultra run: NPU/GPU selectable for the policy (`--policy-device`)
+  and video (`--device`); hardware name read automatically (`brain/hardware.py`) in video cards
+  and the final-video maker (`--results`); task-success check now runs on GPU/NPU too;
+  every library version pinned in requirements.txt.
+- Guides: `docs/core_ultra_guide.md` (volunteer, short) and `docs/core_ultra_setup.html`
+  (detailed, 11 steps, for the user on the borrowed laptop). Hand-over: `HANDOFF.md`.

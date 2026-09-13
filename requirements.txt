@@ -1,12 +1,17 @@
+# Exact versions tested on Windows 11 + Python 3.12 (13 Sep 2026)
 mujoco==3.13.0
 openvino==2026.3.1
 openvino-genai==2026.3.1.0
-nncf
-numpy
+openvino-tokenizers==2026.3.1.0
+nncf==3.3.0
+numpy==2.2.6
 scipy==1.18.1
 pillow==12.3.0
 imageio==2.37.4
-huggingface_hub
-requests
-# training the ACT policy (Day 4) — pulls in PyTorch (CPU build is enough)
+av==15.1.0
+huggingface_hub==1.31.0
+requests==2.34.2
+# training the ACT policy — pulls in PyTorch (the CPU build is enough)
 lerobot[dataset,training]==0.6.1
+torch==2.11.0
+torchvision==0.26.0

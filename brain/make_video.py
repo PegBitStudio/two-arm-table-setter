@@ -63,7 +63,7 @@ def compose(front, top, caption, header):
     return np.asarray(img)
 
 
-def film_table(seed, command, brain, hard, bump, policy):
+def film_table(seed, command, brain, hard, bump, policy, policy_device="CPU"):
     sim = day2_demo.start_sim(seed, video=False, eyes="camera", hard=hard)
     import mujoco
     import robot
@@ -74,7 +74,7 @@ def film_table(seed, command, brain, hard, bump, policy):
     sim._next_frame = sim.d.time
     if policy:
         import policy_skill
-        sim.policy = policy_skill.load()
+        sim.policy = policy_skill.load(device=policy_device)
     captions = []  # (frame index, text)
 
     def say(text):
@@ -119,10 +119,14 @@ def main():
     p.add_argument("--model", action="store_true", help="read the command with Qwen3-VL")
     p.add_argument("--bump", metavar="OBJECT")
     p.add_argument("--policy", action="store_true")
+    p.add_argument("--device", default="GPU", help="OpenVINO device for Qwen3-VL (CPU/GPU/NPU)")
+    p.add_argument("--policy-device", default="CPU", help="OpenVINO device for the ACT policy")
     p.add_argument("--out", type=Path, default=OUT / "demo.mp4")
     args = p.parse_args()
 
-    brain = VisionLanguage("GPU") if args.model else None
+    from hardware import label
+    hw = label()
+    brain = VisionLanguage(args.device) if args.model else None
     args.out.parent.mkdir(exist_ok=True)
     score = []
     with iio.imopen(args.out, "w", plugin="pyav") as writer:
@@ -132,14 +136,14 @@ def main():
             for f in frames:
                 writer.write_frame(f)
 
-        put(card(["Two-Arm Table Setter", f"\"{args.command}\""],
+        put(card(["Two-Arm Table Setter", f"\"{args.command}\"", f"running on {hw}"],
                  sub=f"{args.seeds} random table{'s' if args.seeds > 1 else ''}"
                      f"{' (hard: positions, sizes, colours)' if args.hard else ''}"
                      " - played at 2x speed", seconds=3))
         for seed in range(args.start, args.start + args.seeds):
             t = time.time()
             frames, captions, why, goals_txt, understood = film_table(
-                seed, args.command, brain, args.hard, args.bump, args.policy)
+                seed, args.command, brain, args.hard, args.bump, args.policy, args.policy_device)
             ok = all(v == "" for v in why.values())
             score.append(ok)
             put(card([f"Table {seed}", f"Understood: {goals_txt}"], sub=understood, seconds=2))
@@ -150,8 +154,7 @@ def main():
             put(card(lines, sub="checked against simulator truth, not the robot's camera", seconds=2.5,
                      colour=(20, 60, 30) if ok else (80, 30, 20)))
             print(f"table {seed}: {'PASS' if ok else 'FAIL'} {why} ({time.time() - t:.0f}s)", flush=True)
-        put(card([f"{sum(score)} / {len(score)} tables set correctly",
-                  "Intel Core i7-1165G7 + Iris Xe, OpenVINO"], seconds=4))
+        put(card([f"{sum(score)} / {len(score)} tables set correctly", f"{hw}, OpenVINO"], seconds=4))
     print(f"saved {args.out} ({args.out.stat().st_size / 1e6:.1f} MB)")
 
 

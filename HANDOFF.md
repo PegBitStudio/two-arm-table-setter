@@ -77,11 +77,25 @@ python bench/volunteer.py [--quick]                         # the Core Ultra vol
   later run) — run benchmarks plugged in, nothing else running, and compare within one run.
 - Don't claim anything untested (we removed "spoken" claims until voice was tested, then restored them).
 
+## If this session is on the Core Ultra laptop
+
+The user's **brother's Intel Core Ultra laptop** is being lent to the user, who runs everything on it
+personally with Claude Code. Step-by-step guide: **`docs/core_ultra_setup.html`** (also on the demo site:
+https://pegbitstudio.github.io/two-arm-table-setter/core_ultra_setup.html).
+
+- Project at `C:\work\two-arm-table-setter`, environment in `.venv` there (not the paths above).
+- Run order: `bench/volunteer.py --quick` → `bench/volunteer.py` (results in `volunteer_results/`) →
+  try NPU (`run.py --device NPU`, `--policy --policy-device NPU`) → film with `make_video.py ... --device <best>`
+  → `submission/make_final_video.py --results volunteer_results/results.json`.
+- Video cards and reports read the hardware name automatically (`brain/hardware.py`).
+- It's someone else's laptop: remind the user to sign out of Claude/GitHub, delete `C:\work\...` and
+  `~/.models`, and remove the Speechmatics key before handing it back (guide step 11).
+
 ## Open items / next steps
 
-1. **Core Ultra volunteer** found by the user — send them `docs/core_ultra_guide.md`; when their
-   `volunteer_results.zip` comes back, add their numbers to `bench/RESULTS.md`, README, slides
-   and the demo page (this closes the biggest scoring gap: "run on Core Ultra 2/3", NPU).
+1. **Core Ultra runs** — the user now has the laptop (see above). When results come back, add the
+   numbers to `bench/RESULTS.md`, README, slides and the demo page, and swap in the Core Ultra demo
+   video (this closes the biggest scoring gap: "run on Core Ultra 2/3", NPU).
 2. **Live listening (optional, for the Speechmatics bonus):** microphone → Speechmatics real-time
    API → robot acts. Offered to the user, not started (~half a day).
 3. **Narrated pitch video (optional):** voice-over from the slide notes.
