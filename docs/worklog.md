@@ -195,3 +195,20 @@ benchmark lacks an explicit **throughput** column; voice/Speechmatics **untested
 
 **Still on the user:** lablab + Discord sign-up and team; Speechmatics key (optional); video
 upload (YouTube); narration (optional); final form submission before 16 Sep 19:30 WAT.
+
+## 2026-09-13 (evening) — audit gaps closed
+
+- User asked about human-like hands: advised against — the brief requires SO-101 arms
+  (two-finger gripper); a dexterous hand would break the rules and cost weeks.
+- Tools check: every required tool is used (MuJoCo, LeRobot/ACT, OpenVINO, Intel CPU+iGPU).
+  Optional Intel resources not used, stated in the README: Physical AI Studio and Edge AI Suites
+  (Ubuntu-only installers), Geti (for training camera models; ours is geometric).
+- Fixed: benchmark throughput columns; README sections (business value, Intel hardware mapping,
+  training approach, robustness, tools); business-value slide (deck now 8 slides) and form
+  paragraph; removed "spoken" claims until voice is tested.
+- **Final video** `submission/two_arm_table_setter_demo.mp4` (5:41, 7.8 MB; `make_final_video.py`):
+  10 hard tables → recovery clip → ACT and VLM benchmark cards → links.
+- **Demo page (application URL):** https://pegbitstudio.github.io/two-arm-table-setter/ —
+  GitHub Pages from `docs/`, video in `docs/media/demo.mp4`. Checked in the browser: loads, video plays.
+- Remaining: Core Ultra/NPU run (no hardware), voice (needs key), narrated pitch (optional),
+  user's lablab actions.

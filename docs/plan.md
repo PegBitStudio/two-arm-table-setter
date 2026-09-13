@@ -106,7 +106,7 @@ Main aim is **learning** (robot simulation, vision-language models, OpenVINO). W
 - [x] Slides (7, narration in notes), cover image, README with architecture, results and setup
 - [x] Public GitHub repo: https://github.com/PegBitStudio/two-arm-table-setter
 - [x] lablab form text: `submission/lablab_form.md`
-- [ ] Close the final-audit gaps below
+- [x] Close the final-audit gaps below (all but Core Ultra, voice, narration, user actions)
 - [ ] Clean-machine test of the setup steps if possible
 - [ ] **User: submit on lablab by 3:00 PM WAT Wed 16 Sep** (deadline 7:30 PM)
 
@@ -116,17 +116,17 @@ Main aim is **learning** (robot simulation, vision-language models, OpenVINO). W
 |---|---|
 | Intel 1 — reproducible GitHub repo (setup, deps, scene, training, eval, inference, commands) | ✓ |
 | Intel 2 — reproducible MuJoCo dual-arm dinner-table sim, randomisation, eval config | ✓ `scene.py --hard`, `evaluate.py` |
-| Intel 3 — benchmark script: latency, throughput, device, precision, on Core Ultra 2/3 | ✓ except **no throughput column** and **no Core Ultra** |
-| Intel 4 — video, 10 randomised seeds, command + scene variation + outcome clear | ✓ 10/10 video; **benchmark not shown in it**; needs upload |
-| Intel 5 — technical README: architecture, model choice, bimanual strategy, training, robustness, OpenVINO, hardware mapping | ✓ mostly; **add training, robustness and hardware-mapping sections** |
+| Intel 3 — benchmark script: latency, throughput, device, precision, on Core Ultra 2/3 | ✓ throughput added (calls/s, actions/s); **no Core Ultra** |
+| Intel 4 — video, 10 randomised seeds, command + scene variation + outcome clear | ✓ `submission/two_arm_table_setter_demo.mp4`: 10/10 tables → recovery → benchmark cards (5:41) |
+| Intel 5 — technical README: architecture, model choice, bimanual strategy, training, robustness, OpenVINO, hardware mapping | ✓ all sections added |
 | Intel — "run final simulation on Core Ultra 2/3" | ✗ not possible on our laptop (brief allows Intel CPU + iGPU) |
 | Intel — preserve task success after optimisation | ✓ `act_task` table |
 | Intel scenario — drawer, pouring | ✗ cut (optional "challenge option") |
 | lablab — title, short/long description, tags | ✓ `lablab_form.md` |
 | lablab — cover image, slides | ✓ |
 | lablab — video presentation | ✓ demo video; a narrated pitch video would be better |
-| lablab — **demo application platform + application URL** | ✗ **missing** — GitHub Pages page with video + results is the plan |
-| lablab judging — **business value** | ✗ **not in pitch yet** |
+| lablab — demo application platform + application URL | ✓ GitHub Pages: https://pegbitstudio.github.io/two-arm-table-setter/ |
+| lablab judging — business value | ✓ slide 3, README, form text |
 | lablab — MIT licence, original work | ✓ |
 | lablab — team on lablab, Discord | ✗ user |
 | Speechmatics bonus — real-time voice agent | ✗ batch code only, untested, no key |
