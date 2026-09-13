@@ -49,9 +49,13 @@ def io_dims(policy) -> tuple[int, int]:
 
 
 def env_names(ckpt: Path) -> list[str]:
-    """Names of the task inputs, from the dataset the policy was trained on."""
+    """Names of the task inputs. Shipped policies carry them in env_names.json; otherwise they
+    come from the dataset the policy was trained on (only present on the training machine)."""
     import json
 
+    shipped = ckpt / "env_names.json"
+    if shipped.exists():
+        return json.loads(shipped.read_text())
     root = Path(json.loads((ckpt / "train_config.json").read_text())["dataset"]["root"])
     info = json.loads((root / "meta" / "info.json").read_text())
     return info["features"]["observation.environment_state"]["names"]

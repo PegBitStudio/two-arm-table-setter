@@ -13,6 +13,7 @@ Parts:
 """
 import argparse
 import json
+import os
 import platform
 import sys
 import time
@@ -23,7 +24,9 @@ import openvino as ov
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path[:0] = [str(ROOT / "brain"), str(ROOT / "sim"), str(ROOT / "train"), str(ROOT / "bench")]
-OUT = Path(__file__).resolve().parent
+# Results go next to this script, unless BENCH_OUT says otherwise (volunteer runs keep their
+# own file so they never mix with the team laptop's numbers).
+OUT = Path(os.environ.get("BENCH_OUT", Path(__file__).resolve().parent))
 
 SUITE = [  # command -> expected {object: place}
     ("set the table", {"plate": "center", "fork": "left_of_plate", "spoon": "right_of_plate",

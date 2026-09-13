@@ -161,6 +161,9 @@ python brain/evaluate.py --seeds 10 --hard              # score over 10 random t
 python bench/benchmark.py                               # Intel inference benchmark
 ```
 
+Have an Intel Core Ultra? [docs/core_ultra_guide.md](docs/core_ultra_guide.md) runs every test in one
+command (`python bench/volunteer.py`). The trained policy downloads with `python bench/get_policy.py`.
+
 Training the policy (CPU is enough): `train/record_demos.py` → `train/train_act.py` →
 `train/eval_policy.py`. Details in [docs/setup.md](docs/setup.md).
 
