@@ -28,7 +28,7 @@ OpenVINO, Intel Core Ultra, NPU, Intel, LeRobot, ACT, Qwen3-VL, MuJoCo, SO-101, 
 
 ## Links
 - GitHub: https://github.com/PegBitStudio/two-arm-table-setter
-- Pitch video (narrated, 3:25): `submission/pitch_video.mp4` — upload to YouTube and paste the link.
+- Pitch video (narrated, 2:56): `submission/pitch_video.mp4` — upload to YouTube and paste the link.
   Rebuild with `python submission/make_pitch_video.py`; the words are the deck's own speaker notes.
 - Demo video (5:41, the robot working): `submission/two_arm_table_setter_demo.mp4` (upload to YouTube and paste the link)
 - Slides: `submission/slides.pptx` (export to PDF if the form asks)

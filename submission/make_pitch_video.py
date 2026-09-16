@@ -8,10 +8,12 @@ The script is the single source of truth for the pitch: the words come straight 
 `build_slides.py`'s speaker notes, so the deck and the video can never drift apart, and each
 card is held on screen for exactly as long as its own line of narration.
 
-The voice is Windows' built-in speech synthesiser, which is free and offline but plainly
-robotic. To use a real voice instead, record one wav per narration block into
-`submission/voice/narration_01.wav` ... `_08.wav` and re-run with --keep-audio; the script
-prints the script for each block so they can be read aloud. Needs ffmpeg on PATH.
+The shipped voice track in `submission/voice/` was generated with ElevenLabs
+(eleven_multilingual_v2, voice "Jacob L."), one clip per narration block. `--keep-audio` reuses
+whatever wavs are already there, so re-recording the pitch in a human voice means dropping eight
+files named `narration_01.wav` ... `_08.wav` into that folder and re-running. Without
+`--keep-audio` the script falls back to Windows' built-in synthesiser, which is free and offline
+but plainly robotic. Needs ffmpeg on PATH.
 """
 import argparse
 import json

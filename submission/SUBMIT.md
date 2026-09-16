@@ -44,9 +44,9 @@ Copy the text from [`lablab_form.md`](lablab_form.md) — it is written to be pa
 
 ## 5. If you have time left over
 
-- **Record the pitch narration in your own voice.** The video currently uses Windows' built-in
-  synthesiser, which is clear but robotic, and presentation is scored. The script is the speaker
-  notes in `submission/build_slides.js` — eight blocks. Record one wav each into
+- **Re-record the pitch narration in your own voice.** The video already has a proper
+  ElevenLabs voice-over, so this is optional polish only. The script is the speaker notes in
+  `submission/build_slides.js` — eight blocks. Record one wav each into
   `submission/voice/narration_01.wav` … `_08.wav`, then:
 
       python submission/make_pitch_video.py --keep-audio
