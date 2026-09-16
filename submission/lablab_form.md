@@ -17,7 +17,7 @@ Say "set the table" (Speechmatics turns speech into text in about 2.6 s) — or 
 
 **Why it matters.** Service robots in homes, hospitals, hotels and restaurants need exactly this combination: instructions anyone can give in plain language, two-handed handling, and checking their own work so a bump doesn't ruin the job. It is also cheap: everything runs on an ordinary Intel laptop, and skills are taught from demonstrations the robot records itself — no hand-collected data, usually the most expensive part of robot learning.
 
-**Results.** 30/30 random tables set correctly; 29/30 on harder tables (±4 cm starts, object sizes ±5–10%, varied colours). Every number is checked against simulator truth and reproducible from one command. On the Core Ultra 7 155H, 9/10 hard tables at 8 s per table. Every number is checked against simulator truth, reproducible from one command (`python bench/volunteer.py`), and the raw logs ship in `bench/core_ultra/`. Hardware: Intel Core Ultra 7 155H — CPU, Arc iGPU and AI Boost NPU — Windows 11, OpenVINO 2026.3.1, no cloud.
+**Results.** 30/30 random tables set correctly; 29/30 on harder tables (±4 cm starts, object sizes ±5–10%, varied colours); 9/10 hard tables on the Core Ultra at 8 s per table. Every number is checked against simulator truth, never the robot's own camera, reproducible from one command (`python bench/volunteer.py`), and the raw Core Ultra logs ship in `bench/core_ultra/`. Hardware: Intel Core Ultra 7 155H — CPU, Arc iGPU and AI Boost NPU — Windows 11, OpenVINO 2026.3.1, no cloud.
 
 ## Technology & category tags
 OpenVINO, Intel Core Ultra, NPU, Intel, LeRobot, ACT, Qwen3-VL, MuJoCo, SO-101, Robotics, Physical AI, Vision-Language Model, Imitation Learning, NNCF, Speechmatics
