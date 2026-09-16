@@ -11,3 +11,5 @@ volunteer_results.zip
 !brain/test_command.wav
 node_modules/
 *.zip
+submission/_pitch_frames/
+submission/voice/

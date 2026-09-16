@@ -126,7 +126,7 @@ Main aim is **learning** (robot simulation, vision-language models, OpenVINO). W
 | Intel scenario — drawer, pouring | ✗ cut (optional "challenge option") |
 | lablab — title, short/long description, tags | ✓ `lablab_form.md` |
 | lablab — cover image, slides | ✓ |
-| lablab — video presentation | ✓ demo video; a narrated pitch video would be better |
+| lablab — video presentation | ✓ narrated pitch video (3:25, `submission/pitch_video.mp4`) **and** the 5:41 demo video |
 | lablab — demo application platform + application URL | ✓ GitHub Pages: https://pegbitstudio.github.io/two-arm-table-setter/ |
 | lablab judging — business value | ✓ slide 3, README, form text |
 | lablab — MIT licence, original work | ✓ |
