@@ -1,0 +1,8 @@
+﻿vlm:
+   {'device': 'CPU', 'image_width': 320, 'load_s': 4.1, 's_per_command': 3.0, 'first_token_ms': 2065, 'tokens_per_s': 12.5, 'correct': '5/5'}
+   {'device': 'CPU', 'image_width': 480, 'load_s': 4.1, 's_per_command': 3.6, 'first_token_ms': 2707, 'tokens_per_s': 12.7, 'correct': '5/5'}
+   {'device': 'CPU', 'image_width': 960, 'load_s': 4.1, 's_per_command': 10.9, 'first_token_ms': 9910, 'tokens_per_s': 11.4, 'correct': '5/5'}
+   {'device': 'GPU', 'image_width': 320, 'load_s': 12.8, 's_per_command': 1.1, 'first_token_ms': 564, 'tokens_per_s': 21.1, 'correct': '5/5'}
+   {'device': 'GPU', 'image_width': 480, 'load_s': 12.8, 's_per_command': 1.3, 'first_token_ms': 696, 'tokens_per_s': 20.7, 'correct': '5/5'}
+   {'device': 'GPU', 'image_width': 960, 'load_s': 12.8, 's_per_command': 2.8, 'first_token_ms': 2193, 'tokens_per_s': 19.5, 'correct': '5/5'}
+wrote C:\Users\Oluwatosin Oladunni\Downloads\ai-infra-summit-2026\ai-infra-summit-2026\volunteer_results\results.json and C:\Users\Oluwatosin Oladunni\Downloads\ai-infra-summit-2026\ai-infra-summit-2026\volunteer_results\RESULTS.md

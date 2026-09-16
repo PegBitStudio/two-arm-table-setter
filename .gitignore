@@ -9,3 +9,5 @@ submission/*.mp4
 volunteer_results/
 volunteer_results.zip
 !brain/test_command.wav
+node_modules/
+*.zip

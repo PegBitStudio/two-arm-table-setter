@@ -1,0 +1,16 @@
+﻿act:
+Loading weights from local directory
+   {'backend': 'PyTorch', 'precision': 'FP32', 'device': 'CPU', 'ms_per_call': 2.065, 'calls_per_s': 484.3, 'actions_per_s': 9685, 'speedup_vs_pytorch': 1.0}
+   {'backend': 'OpenVINO', 'precision': 'FP32', 'device': 'CPU', 'ms_per_call': 0.831, 'calls_per_s': 1203.4, 'actions_per_s': 24067, 'speedup_vs_pytorch': 2.48}
+   {'backend': 'OpenVINO', 'precision': 'FP32', 'device': 'GPU', 'ms_per_call': 1.489, 'calls_per_s': 671.6, 'actions_per_s': 13432, 'speedup_vs_pytorch': 1.39}
+   {'backend': 'OpenVINO', 'precision': 'FP32', 'device': 'NPU', 'ms_per_call': 0.903, 'calls_per_s': 1107.4, 'actions_per_s': 22148, 'speedup_vs_pytorch': 2.29}
+   {'backend': 'OpenVINO', 'precision': 'FP16', 'device': 'CPU', 'ms_per_call': 0.806, 'calls_per_s': 1240.7, 'actions_per_s': 24814, 'speedup_vs_pytorch': 2.56}
+   {'backend': 'OpenVINO', 'precision': 'FP16', 'device': 'GPU', 'ms_per_call': 1.522, 'calls_per_s': 657.0, 'actions_per_s': 13141, 'speedup_vs_pytorch': 1.36}
+   {'backend': 'OpenVINO', 'precision': 'FP16', 'device': 'NPU', 'ms_per_call': 1.06, 'calls_per_s': 943.4, 'actions_per_s': 18868, 'speedup_vs_pytorch': 1.95}
+   {'backend': 'OpenVINO', 'precision': 'INT8', 'device': 'CPU', 'ms_per_call': 0.724, 'calls_per_s': 1381.2, 'actions_per_s': 27624, 'speedup_vs_pytorch': 2.85}
+   {'backend': 'OpenVINO', 'precision': 'INT8', 'device': 'GPU', 'ms_per_call': 1.419, 'calls_per_s': 704.7, 'actions_per_s': 14094, 'speedup_vs_pytorch': 1.46}
+   {'backend': 'OpenVINO', 'precision': 'INT8', 'device': 'NPU', 'ms_per_call': 1.099, 'calls_per_s': 909.9, 'actions_per_s': 18198, 'speedup_vs_pytorch': 1.88}
+   {'backend': 'OpenVINO', 'precision': 'INT8W', 'device': 'CPU', 'ms_per_call': 0.743, 'calls_per_s': 1345.9, 'actions_per_s': 26918, 'speedup_vs_pytorch': 2.78}
+   {'backend': 'OpenVINO', 'precision': 'INT8W', 'device': 'GPU', 'ms_per_call': 1.929, 'calls_per_s': 518.4, 'actions_per_s': 10368, 'speedup_vs_pytorch': 1.07}
+   {'backend': 'OpenVINO', 'precision': 'INT8W', 'device': 'NPU', 'ms_per_call': 1.036, 'calls_per_s': 965.3, 'actions_per_s': 19305, 'speedup_vs_pytorch': 1.99}
+wrote C:\Users\Oluwatosin Oladunni\Downloads\ai-infra-summit-2026\ai-infra-summit-2026\volunteer_results\results.json and C:\Users\Oluwatosin Oladunni\Downloads\ai-infra-summit-2026\ai-infra-summit-2026\volunteer_results\RESULTS.md

@@ -27,7 +27,7 @@ function circle(s, x, y, label, d = 0.42) {
   s.addImage({ path: path.join(SUB, "cover.png"), x: 0, y: 0, w: 10, h: 5.625 });
   s.addText("AI Infra Summit Hackathon · Intel online track · Bimanual VLA manipulation", {
     x: 0.45, y: 0.25, w: 9, h: 0.35, fontFace: B, fontSize: 13, color: C.mute, margin: 0, isTextBox: true });
-  s.addNotes("Two robot arms that set a dinner table when you tell them to. They look at the table with a camera, understand the command with a vision-language model, hand things to each other, and fix their own mistakes. Everything runs on a five-year-old Intel laptop with OpenVINO: no graphics card, no cloud.");
+  s.addNotes("Two robot arms that set a dinner table when you tell them to. They look at the table with a camera, understand the command with a vision-language model, hand things to each other, and fix their own mistakes. Everything runs on an Intel Core Ultra laptop with OpenVINO, using its processor, graphics and neural processing unit: no graphics card, no cloud.");
 }
 
 // 2 — the idea + headline numbers
@@ -144,22 +144,22 @@ function circle(s, x, y, label, d = 0.42) {
 // 6 — Intel optimisation
 {
   const s = pres.addSlide(); bg(s);
-  title(s, "OpenVINO: faster, same accuracy", "Intel Core i7-1165G7 + Iris Xe iGPU, 16 GB · OpenVINO 2026.3");
-  s.addChart(pres.charts.BAR, [{ name: "ms", labels: ["INT8 weights", "OpenVINO INT8", "OpenVINO FP16", "OpenVINO FP32", "PyTorch FP32"], values: [3.53, 3.68, 1.88, 1.73, 4.34] }], {
+  title(s, "OpenVINO on all three Intel chips", "Intel Core Ultra 7 155H · CPU + Arc iGPU + AI Boost NPU · OpenVINO 2026.3.1");
+  s.addChart(pres.charts.BAR, [{ name: "ms", labels: ["INT8 on NPU", "INT8 weights", "OpenVINO INT8", "OpenVINO FP16", "OpenVINO FP32", "PyTorch FP32"], values: [1.10, 0.74, 0.72, 0.81, 0.83, 2.07] }], {
     x: 0.4, y: 1.35, w: 5.4, h: 3.9, barDir: "bar", chartColors: [C.yellow],
     showValue: true, dataLabelPosition: "outEnd", dataLabelColor: C.white, dataLabelFontSize: 11, dataLabelFormatCode: "0.00\" ms\"",
     catAxisLabelColor: C.white, valAxisLabelColor: C.mute, valGridLine: { color: "2E3743", size: 0.5 }, catGridLine: { style: "none" },
-    showLegend: false, showTitle: true, title: "ACT policy, CPU, ms per call (lower is better)", titleColor: C.white, titleFontSize: 13,
+    showLegend: false, showTitle: true, title: "ACT policy, ms per call, CPU unless marked (lower is better)", titleColor: C.white, titleFontSize: 13,
   });
-  const calls = [["2.5×", "faster policy on CPU with OpenVINO — task success unchanged at every precision (9–10/10)"],
-                 ["30 s → 4 s", "to read a command: 480 px picture and short answers instead of JSON"],
-                 ["2×", "faster on the Iris Xe iGPU for large pictures (7.5 s vs 14.9 s)"]];
+  const calls = [["2.9×", "faster policy on CPU with OpenVINO — task success unchanged at every precision (9–10/10)"],
+                 ["0.90 ms", "on the AI Boost NPU — 10/10 mugs placed, freeing the CPU and iGPU"],
+                 ["1.3 s", "to read a command on the Arc iGPU — 2.8× the CPU, down from 30 s originally"]];
   calls.forEach(([n, d], i) => {
     const y = 1.4 + i * 1.3;
     s.addText(n, { x: 6.1, y, w: 3.5, h: 0.5, fontFace: H, fontSize: 26, bold: true, color: C.yellow, margin: 0, isTextBox: true });
     s.addText(d, { x: 6.1, y: y + 0.5, w: 3.5, h: 0.7, fontFace: B, fontSize: 12, color: C.mute, valign: "top", margin: 0, isTextBox: true });
   });
-  s.addNotes("OpenVINO makes our trained policy two and a half times faster on the laptop CPU, and the robot still succeeds just as often. For a model this small, INT8 and the integrated GPU don't pay off, and we say so. The vision-language model went from thirty seconds to four seconds per command, and the integrated GPU halves the time for large pictures.");
+  s.addNotes("We measured this on a Core Ultra 7 155H, across all three of its Intel chips. OpenVINO makes our trained policy nearly three times faster on the CPU, and the robot still succeeds just as often. The same policy runs on the AI Boost NPU at nine tenths of a millisecond, placing the mug ten times out of ten, which frees the processor and graphics for everything else. The Arc graphics reads a command in one point three seconds, almost three times faster than the processor. One honest finding: the NPU compiler cannot build the vision-language model at all, so that part falls back to the graphics chip automatically.");
 }
 
 // 7 — honest + try it
@@ -168,7 +168,7 @@ function circle(s, x, y, label, d = 0.42) {
   title(s, "Open, reproducible, honest");
   s.addText([
     { text: "What we'd do next", options: { bold: true, color: C.white, fontSize: 16, breakLine: true } },
-    { text: "Run the benchmark on a Core Ultra with an NPU (ours is an 11th-gen i7)", options: { bullet: true, color: C.mute, breakLine: true } },
+    { text: "Get the vision-language model onto the NPU — today OpenVINO's NPU compiler rejects it", options: { bullet: true, color: C.mute, breakLine: true } },
     { text: "Train policies for the hand-off too; today most skills are the scripted teacher", options: { bullet: true, color: C.mute, breakLine: true } },
     { text: "Add the drawer and pouring from Intel's example task", options: { bullet: true, color: C.mute } },
   ], { x: 0.5, y: 1.3, w: 4.4, h: 2.6, fontFace: B, fontSize: 13, valign: "top", paraSpaceAfter: 6, margin: 0, isTextBox: true });
@@ -183,7 +183,7 @@ function circle(s, x, y, label, d = 0.42) {
   ], { x: 5.45, y: 1.45, w: 3.9, h: 1.85, valign: "top", paraSpaceAfter: 4, margin: 0, isTextBox: true });
   s.addText("Every scene is seeded and every number here is reproducible from one command. MIT licence. Built with MuJoCo, LeRobot, OpenVINO and Qwen3-VL.", {
     x: 0.5, y: 3.95, w: 9, h: 0.6, fontFace: B, fontSize: 13, color: C.mute, margin: 0, isTextBox: true });
-  s.addNotes("Everything is open source and seeded, so every number in this deck can be reproduced with one command. We're upfront about what's missing: a Core Ultra and NPU run, more learned skills, and the drawer and pouring. Thank you.");
+  s.addNotes("Everything is open source and seeded, so every number in this deck can be reproduced with one command, and the raw Core Ultra logs ship in the repository. We're upfront about what's missing: the vision-language model still cannot compile for the NPU, most skills are scripted rather than learned, and we left out the drawer and pouring. Thank you.");
 }
 
 pres.writeFile({ fileName: path.join(SUB, "slides.pptx") }).then((f) => console.log("saved", f));

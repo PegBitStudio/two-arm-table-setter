@@ -1,0 +1,18 @@
+﻿Camera sees: bottle, fork, mug, plate, spoon
+the VLM does not compile on this NPU; using GPU instead
+AI model loaded on GPU in 12s
+Understood (Qwen3-VL-4B (GPU), 2.0s):
+  plate -> center
+  fork -> left_of_plate
+  spoon -> right_of_plate
+  mug -> top_right_of_plate
+  plate -> center: arm A picks up the plate; arm A puts the plate at (+0.00, -0.02)
+  fork -> left_of_plate: arm B hands the fork to arm A; arm A puts the fork at (-0.07, -0.02)
+  spoon -> right_of_plate: arm A hands the spoon to arm B; arm B puts the spoon at (+0.07, -0.02)
+  mug -> top_right_of_plate: arm B picks up the mug; arm B puts the mug at (+0.07, +0.07)
+
+Result:
+  plate  camera says done: yes | actually done: yes
+  fork   camera says done: yes | actually done: yes
+  spoon  camera says done: yes | actually done: yes
+  mug    camera says done: yes | actually done: yes

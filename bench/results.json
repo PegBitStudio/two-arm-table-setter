@@ -1,64 +1,8 @@
 {
   "parts": {
-    "vlm": [
-      {
-        "device": "CPU",
-        "image_width": 320,
-        "load_s": 4.8,
-        "s_per_command": 3.8,
-        "first_token_ms": 2273,
-        "tokens_per_s": 7.9,
-        "correct": "5/5"
-      },
-      {
-        "device": "CPU",
-        "image_width": 480,
-        "load_s": 4.8,
-        "s_per_command": 4.3,
-        "first_token_ms": 2712,
-        "tokens_per_s": 7.2,
-        "correct": "5/5"
-      },
-      {
-        "device": "CPU",
-        "image_width": 960,
-        "load_s": 4.8,
-        "s_per_command": 14.9,
-        "first_token_ms": 13159,
-        "tokens_per_s": 6.7,
-        "correct": "5/5"
-      },
-      {
-        "device": "GPU",
-        "image_width": 320,
-        "load_s": 17.2,
-        "s_per_command": 4.0,
-        "first_token_ms": 1385,
-        "tokens_per_s": 4.5,
-        "correct": "5/5"
-      },
-      {
-        "device": "GPU",
-        "image_width": 480,
-        "load_s": 17.2,
-        "s_per_command": 4.2,
-        "first_token_ms": 1612,
-        "tokens_per_s": 4.5,
-        "correct": "5/5"
-      },
-      {
-        "device": "GPU",
-        "image_width": 960,
-        "load_s": 17.2,
-        "s_per_command": 7.5,
-        "first_token_ms": 4831,
-        "tokens_per_s": 4.5,
-        "correct": "5/5"
-      }
-    ],
     "perception": [
       {
-        "ms_per_look": 889.3,
+        "ms_per_look": 154.6,
         "resolution": "960x720 colour + depth"
       }
     ],
@@ -67,82 +11,118 @@
         "backend": "PyTorch",
         "precision": "FP32",
         "device": "CPU",
-        "ms_per_call": 4.339,
-        "speedup_vs_pytorch": 1.0,
-        "calls_per_s": 230.5,
-        "actions_per_s": 4609
+        "ms_per_call": 2.065,
+        "calls_per_s": 484.3,
+        "actions_per_s": 9685,
+        "speedup_vs_pytorch": 1.0
       },
       {
         "backend": "OpenVINO",
         "precision": "FP32",
         "device": "CPU",
-        "ms_per_call": 1.727,
-        "speedup_vs_pytorch": 2.51,
-        "calls_per_s": 579.0,
-        "actions_per_s": 11581
+        "ms_per_call": 0.831,
+        "calls_per_s": 1203.4,
+        "actions_per_s": 24067,
+        "speedup_vs_pytorch": 2.48
       },
       {
         "backend": "OpenVINO",
         "precision": "FP32",
         "device": "GPU",
-        "ms_per_call": 12.378,
-        "speedup_vs_pytorch": 0.35,
-        "calls_per_s": 80.8,
-        "actions_per_s": 1616
+        "ms_per_call": 1.489,
+        "calls_per_s": 671.6,
+        "actions_per_s": 13432,
+        "speedup_vs_pytorch": 1.39
+      },
+      {
+        "backend": "OpenVINO",
+        "precision": "FP32",
+        "device": "NPU",
+        "ms_per_call": 0.903,
+        "calls_per_s": 1107.4,
+        "actions_per_s": 22148,
+        "speedup_vs_pytorch": 2.29
       },
       {
         "backend": "OpenVINO",
         "precision": "FP16",
         "device": "CPU",
-        "ms_per_call": 1.877,
-        "speedup_vs_pytorch": 2.31,
-        "calls_per_s": 532.8,
-        "actions_per_s": 10655
+        "ms_per_call": 0.806,
+        "calls_per_s": 1240.7,
+        "actions_per_s": 24814,
+        "speedup_vs_pytorch": 2.56
       },
       {
         "backend": "OpenVINO",
         "precision": "FP16",
         "device": "GPU",
-        "ms_per_call": 14.611,
-        "speedup_vs_pytorch": 0.3,
-        "calls_per_s": 68.4,
-        "actions_per_s": 1369
+        "ms_per_call": 1.522,
+        "calls_per_s": 657.0,
+        "actions_per_s": 13141,
+        "speedup_vs_pytorch": 1.36
+      },
+      {
+        "backend": "OpenVINO",
+        "precision": "FP16",
+        "device": "NPU",
+        "ms_per_call": 1.06,
+        "calls_per_s": 943.4,
+        "actions_per_s": 18868,
+        "speedup_vs_pytorch": 1.95
       },
       {
         "backend": "OpenVINO",
         "precision": "INT8",
         "device": "CPU",
-        "ms_per_call": 3.684,
-        "speedup_vs_pytorch": 1.18,
-        "calls_per_s": 271.4,
-        "actions_per_s": 5429
+        "ms_per_call": 0.724,
+        "calls_per_s": 1381.2,
+        "actions_per_s": 27624,
+        "speedup_vs_pytorch": 2.85
       },
       {
         "backend": "OpenVINO",
         "precision": "INT8",
         "device": "GPU",
-        "ms_per_call": 12.861,
-        "speedup_vs_pytorch": 0.34,
-        "calls_per_s": 77.8,
-        "actions_per_s": 1555
+        "ms_per_call": 1.419,
+        "calls_per_s": 704.7,
+        "actions_per_s": 14094,
+        "speedup_vs_pytorch": 1.46
+      },
+      {
+        "backend": "OpenVINO",
+        "precision": "INT8",
+        "device": "NPU",
+        "ms_per_call": 1.099,
+        "calls_per_s": 909.9,
+        "actions_per_s": 18198,
+        "speedup_vs_pytorch": 1.88
       },
       {
         "backend": "OpenVINO",
         "precision": "INT8W",
         "device": "CPU",
-        "ms_per_call": 3.53,
-        "speedup_vs_pytorch": 1.23,
-        "calls_per_s": 283.3,
-        "actions_per_s": 5666
+        "ms_per_call": 0.743,
+        "calls_per_s": 1345.9,
+        "actions_per_s": 26918,
+        "speedup_vs_pytorch": 2.78
       },
       {
         "backend": "OpenVINO",
         "precision": "INT8W",
         "device": "GPU",
-        "ms_per_call": 23.488,
-        "speedup_vs_pytorch": 0.18,
-        "calls_per_s": 42.6,
-        "actions_per_s": 851
+        "ms_per_call": 1.929,
+        "calls_per_s": 518.4,
+        "actions_per_s": 10368,
+        "speedup_vs_pytorch": 1.07
+      },
+      {
+        "backend": "OpenVINO",
+        "precision": "INT8W",
+        "device": "NPU",
+        "ms_per_call": 1.036,
+        "calls_per_s": 965.3,
+        "actions_per_s": 19305,
+        "speedup_vs_pytorch": 1.99
       }
     ],
     "act_task": [
@@ -164,20 +144,97 @@
       {
         "policy": "OpenVINO INT8 (CPU)",
         "within_1_5cm": "9/10",
-        "within_2_5cm": "10/10"
+        "within_2_5cm": "9/10"
       },
       {
         "policy": "OpenVINO INT8W (CPU)",
         "within_1_5cm": "10/10",
         "within_2_5cm": "10/10"
+      },
+      {
+        "policy": "OpenVINO FP16 (GPU)",
+        "within_1_5cm": "10/10",
+        "within_2_5cm": "10/10"
+      },
+      {
+        "policy": "OpenVINO INT8 (GPU)",
+        "within_1_5cm": "8/10",
+        "within_2_5cm": "10/10"
+      },
+      {
+        "policy": "OpenVINO FP16 (NPU)",
+        "within_1_5cm": "10/10",
+        "within_2_5cm": "10/10"
+      },
+      {
+        "policy": "OpenVINO INT8 (NPU)",
+        "within_1_5cm": "8/10",
+        "within_2_5cm": "9/10"
+      }
+    ],
+    "vlm": [
+      {
+        "device": "CPU",
+        "image_width": 320,
+        "load_s": 4.1,
+        "s_per_command": 3.0,
+        "first_token_ms": 2065,
+        "tokens_per_s": 12.5,
+        "correct": "5/5"
+      },
+      {
+        "device": "CPU",
+        "image_width": 480,
+        "load_s": 4.1,
+        "s_per_command": 3.6,
+        "first_token_ms": 2707,
+        "tokens_per_s": 12.7,
+        "correct": "5/5"
+      },
+      {
+        "device": "CPU",
+        "image_width": 960,
+        "load_s": 4.1,
+        "s_per_command": 10.9,
+        "first_token_ms": 9910,
+        "tokens_per_s": 11.4,
+        "correct": "5/5"
+      },
+      {
+        "device": "GPU",
+        "image_width": 320,
+        "load_s": 12.8,
+        "s_per_command": 1.1,
+        "first_token_ms": 564,
+        "tokens_per_s": 21.1,
+        "correct": "5/5"
+      },
+      {
+        "device": "GPU",
+        "image_width": 480,
+        "load_s": 12.8,
+        "s_per_command": 1.3,
+        "first_token_ms": 696,
+        "tokens_per_s": 20.7,
+        "correct": "5/5"
+      },
+      {
+        "device": "GPU",
+        "image_width": 960,
+        "load_s": 12.8,
+        "s_per_command": 2.8,
+        "first_token_ms": 2193,
+        "tokens_per_s": 19.5,
+        "correct": "5/5"
       }
     ]
   },
   "hardware": {
-    "cpu": "11th Gen Intel(R) Core(TM) i7-1165G7 @ 2.80GHz",
+    "cpu": "Intel(R) Core(TM) Ultra 7 155H",
     "devices": {
-      "CPU": "11th Gen Intel(R) Core(TM) i7-1165G7 @ 2.80GHz",
-      "GPU": "Intel(R) Iris(R) Xe Graphics (iGPU)"
+      "CPU": "Intel(R) Core(TM) Ultra 7 155H",
+      "GPU": "Intel(R) Arc(TM) Graphics (iGPU)",
+      "NPU": "Intel(R) AI Boost"
     },
     "openvino": "2026.3.1-22476-759c5a6ab8c-releases/2026/3",
     "os": "Windows-11-10.0.26200-SP0"

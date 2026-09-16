@@ -1,0 +1,20 @@
+act_task:
+Loading weights from local directory
+Loading weights from local directory
+Loading weights from local directory
+Loading weights from local directory
+Loading weights from local directory
+Loading weights from local directory
+Loading weights from local directory
+Loading weights from local directory
+Loading weights from local directory
+   {'policy': 'PyTorch FP32', 'within_1_5cm': '9/10', 'within_2_5cm': '9/10'}
+   {'policy': 'OpenVINO FP32 (CPU)', 'within_1_5cm': '9/10', 'within_2_5cm': '9/10'}
+   {'policy': 'OpenVINO FP16 (CPU)', 'within_1_5cm': '9/10', 'within_2_5cm': '9/10'}
+   {'policy': 'OpenVINO INT8 (CPU)', 'within_1_5cm': '9/10', 'within_2_5cm': '9/10'}
+   {'policy': 'OpenVINO INT8W (CPU)', 'within_1_5cm': '10/10', 'within_2_5cm': '10/10'}
+   {'policy': 'OpenVINO FP16 (GPU)', 'within_1_5cm': '10/10', 'within_2_5cm': '10/10'}
+   {'policy': 'OpenVINO INT8 (GPU)', 'within_1_5cm': '8/10', 'within_2_5cm': '10/10'}
+   {'policy': 'OpenVINO FP16 (NPU)', 'within_1_5cm': '10/10', 'within_2_5cm': '10/10'}
+   {'policy': 'OpenVINO INT8 (NPU)', 'within_1_5cm': '8/10', 'within_2_5cm': '9/10'}
+wrote C:\Users\Oluwatosin Oladunni\Downloads\ai-infra-summit-2026\ai-infra-summit-2026\volunteer_results\results.json and C:\Users\Oluwatosin Oladunni\Downloads\ai-infra-summit-2026\ai-infra-summit-2026\volunteer_results\RESULTS.md

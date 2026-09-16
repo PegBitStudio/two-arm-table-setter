@@ -2,8 +2,9 @@
 
 **Two simulated SO-101 robot arms that set a dinner table from a spoken or typed command —
 seeing with a camera, understanding with a vision-language model, handing things to each other,
-and fixing their own mistakes. Everything runs on a 2020 Intel laptop (i7-1165G7, Iris Xe) with
-OpenVINO. No GPU card, no cloud.**
+and fixing their own mistakes. Everything runs on an ordinary Intel laptop with OpenVINO —
+measured end to end on an **Intel Core Ultra 7 155H** (CPU + Arc iGPU + AI Boost NPU) and on a
+2020 i7-1165G7 with Iris Xe. No GPU card, no cloud.**
 
 Built for the AI Infra Summit Hackathon (lablab.ai) — Intel online track: *Bimanual VLA
 Manipulation with Multi-Modal Reasoning*.
@@ -19,7 +20,7 @@ Manipulation with Multi-Modal Reasoning*.
           ▼                                   ┌──────────────────────────┐
  ┌───────────────────────────┐   picture      │ EYES  perception.py      │
  │ UNDERSTAND  Qwen3-VL-4B    │ ◄───────────── │ finds every object from  │
- │ INT4 on OpenVINO, Iris Xe  │                │ height map + shape;      │
+ │ INT4 on OpenVINO, iGPU     │                │ height map + shape;      │
  │ "red thing" = mug          │                │ 0.5 mm mean error        │
  └────────────┬──────────────┘                └────────────┬─────────────┘
               │ goals: mug → top_left, fork → right         │ positions
@@ -40,8 +41,12 @@ Manipulation with Multi-Modal Reasoning*.
 
 ## Results
 
-All numbers from this laptop (Intel Core i7-1165G7, Iris Xe iGPU, 16 GB, no NPU).
-Success is always judged against simulator ground truth, never the robot's own camera.
+All speed numbers are measured on an **Intel Core Ultra 7 155H** (CPU + Arc iGPU + AI Boost NPU,
+Windows 11, OpenVINO 2026.3.1) — raw logs in [bench/core_ultra/](bench/core_ultra/). The 20- and
+30-table task scores were run on a 2020 i7-1165G7 with Iris Xe; the 10 hard tables were re-run on
+the Core Ultra and gave the same result, including the same single failure, so hardware does not
+change behaviour. Success is always judged against simulator ground truth, never the robot's own
+camera; each row says which machine it came from where it matters.
 
 | What | Result |
 |---|---|
@@ -50,38 +55,47 @@ Success is always judged against simulator ground truth, never the robot's own c
 | Recovery: an item knocked out of place mid-task | noticed and fixed (demo) |
 | Camera perception, 20 tables | every object found, 0.5 mm mean / 1.0 mm worst error |
 | Spoken command → text (Speechmatics batch API) | "Please set the table." transcribed in 2.6 s; table then set 4/4 |
-| Command understanding (Qwen3-VL-4B INT4, OpenVINO GenAI) | 5/5 test commands, **~4 s** per command (CPU or iGPU) |
+| Command understanding (Qwen3-VL-4B INT4, OpenVINO GenAI) | 5/5 test commands, **1.3 s** per command on the Arc iGPU (3.6 s on CPU) |
 | Trained ACT policy (LeRobot), mug pick-and-place on 20 unseen tables | **19/20 within 1.5 cm** |
-| ACT on OpenVINO vs PyTorch, CPU | **2.5× faster** (1.7 ms vs 4.3 ms per call), task success unchanged |
+| ACT on OpenVINO vs PyTorch, CPU | **2.9× faster** (0.72 ms vs 2.07 ms per call), task success unchanged |
+| ACT policy on the **NPU** (AI Boost) | 0.90 ms per call, **10/10** mugs placed at FP16 |
+| Full task on the Core Ultra, 10 hard tables | **9/10**, 8 s per table |
 
 ### Intel optimisation, measured ([full table](bench/RESULTS.md), `python bench/benchmark.py`)
 
-**ACT policy (5 M parameters), ms per call and task success on 10 unseen tables:**
+**ACT policy (5 M parameters) on the Core Ultra 7 155H — ms per call on all three Intel chips,
+and task success on 10 unseen tables:**
 
-| Backend | Precision | CPU ms | iGPU ms | Mug within 1.5 cm |
-|---|---|---|---|---|
-| PyTorch | FP32 | 4.34 | – | 9/10 |
-| OpenVINO | FP32 | **1.73** | 12.4 | 9/10 |
-| OpenVINO | FP16 | 1.88 | 14.6 | 9/10 |
-| OpenVINO | INT8 (NNCF, calibrated on demos) | 3.68 | 12.9 | 9/10 |
-| OpenVINO | INT8 weights only | 3.53 | 23.5 | 10/10 |
+| Backend | Precision | CPU ms | iGPU ms | NPU ms | Mug within 1.5 cm |
+|---|---|---|---|---|---|
+| PyTorch | FP32 | 2.07 | – | – | 9/10 |
+| OpenVINO | FP32 | 0.83 | 1.49 | 0.90 | 9/10 (CPU) |
+| OpenVINO | FP16 | 0.81 | 1.52 | 1.06 | 9/10 CPU · 10/10 iGPU · 10/10 NPU |
+| OpenVINO | INT8 (NNCF, calibrated on demos) | **0.72** | 1.42 | 1.10 | 9/10 CPU · 8/10 iGPU · 8/10 NPU |
+| OpenVINO | INT8 weights only | 0.74 | 1.93 | 1.04 | 10/10 (CPU) |
 
-Findings: OpenVINO gives a 2.5× speed-up with identical behaviour. For a model this small,
-INT8 and the iGPU don't pay off: quantise/dequantise and GPU dispatch cost more than the maths.
-Optimisation never hurt the task. INT8 accuracy was tuned: NNCF's default preset drifted least
-(MIXED and SmoothQuant were worse).
+Findings: OpenVINO gives a 2.5–2.9× speed-up over PyTorch with no loss of task success, and the
+whole policy runs on the NPU at 0.90 ms per call (2.3× PyTorch) — freeing the CPU and iGPU for
+perception and the language model. For a model this small the CPU still wins outright: dispatch
+to the iGPU or NPU costs more than the maths. INT8 accuracy was tuned — NNCF's default preset
+drifted least (MIXED and SmoothQuant were worse). The same table on the older i7-1165G7 (no NPU)
+is in [docs/worklog.md](docs/worklog.md): 4.34 ms PyTorch → 1.73 ms OpenVINO, the same 2.5× ratio.
 
-**Qwen3-VL-4B INT4 (Intel's OpenVINO build), seconds per command, 5/5 correct in every row:**
+**Qwen3-VL-4B INT4 (Intel's OpenVINO build) on the Core Ultra, seconds per command,
+5/5 correct in every row:**
 
-| Picture width | CPU | iGPU (Iris Xe) |
+| Picture width | CPU | iGPU (Arc) |
 |---|---|---|
-| 320 px | 3.8 | 4.0 |
-| 480 px (used) | 4.3 | 4.2 |
-| 960 px | 14.9 | 7.5 |
+| 320 px | 3.0 | 1.1 |
+| 480 px (used) | 3.6 | **1.3** |
+| 960 px | 10.9 | 2.8 |
 
-The iGPU's advantage is reading the picture (time to first token 1.6 s vs 2.7 s at 480 px;
-4.8 s vs 13.2 s at 960 px). Two prompt changes cut a command from ~30 s to ~4 s: a 480-px
-picture instead of 960, and plain `object: place` lines instead of JSON (fewer tokens to write).
+The Arc iGPU is 2.8× faster than the CPU at the size we use, and its advantage is reading the
+picture (time to first token 0.70 s vs 2.7 s at 480 px; 2.2 s vs 9.9 s at 960 px). Two prompt
+changes cut a command from ~30 s to a few seconds: a 480-px picture instead of 960, and plain
+`object: place` lines instead of JSON (fewer tokens to write). **The NPU cannot run this model:**
+the OpenVINO 2026.3 NPU compiler aborts on Qwen3-VL-4B's vision tower, so `brain/language.py`
+detects an NPU request and falls back to the iGPU — see [Honest limitations](#honest-limitations).
 
 ## Why it matters (business value)
 
@@ -101,11 +115,13 @@ Two further points lower the cost of getting there:
 
 | Part | Runs on | Format |
 |---|---|---|
-| Command understanding — Qwen3-VL-4B | **iGPU** (Iris Xe) by default; CPU also works | OpenVINO GenAI, INT4 |
-| Mug skill — ACT policy (5 M parameters) | **CPU** — 2.5× faster than PyTorch; the iGPU is slower for a model this small | OpenVINO IR, FP16 (FP32/INT8 also exported) |
-| Perception — colour + depth analysis | CPU | NumPy/SciPy (no neural network) |
+| Command understanding — Qwen3-VL-4B | **iGPU** (Arc) by default, 1.3 s/command; CPU also works; the NPU cannot compile it | OpenVINO GenAI, INT4 |
+| Mug skill — ACT policy (5 M parameters) | **CPU** by default (0.72 ms, 2.9× PyTorch); also runs on the **NPU** (0.90 ms, 10/10 task) and the iGPU — `run.py --policy-device NPU` | OpenVINO IR, FP16 (FP32/INT8 also exported) |
+| Perception — colour + depth analysis | CPU — 155 ms per look at 960×720 colour + depth | NumPy/SciPy (no neural network) |
 | Physics simulation | CPU | MuJoCo 3.13 |
-| NPU | not present on this laptop — untested | – |
+
+All three Intel chips are used and measured: CPU for the policy and physics, Arc iGPU for the
+vision-language model, NPU verified end to end on the policy (`bench/core_ultra/npu_policy_run.log`).
 
 ## Training approach
 
@@ -145,7 +161,7 @@ perception is geometric and needs no training). The brief lists these as optiona
 | End-to-end task + bimanual manipulation (30) | `brain/run.py`, `brain/evaluate.py`; hand-offs in `sim/skills.py` |
 | VLA / multi-modal reasoning (20) | `brain/language.py` (sees the picture), `brain/planner.py` (re-plans after every look) |
 | Robustness across 10 seeds (15) | `brain/evaluate.py --hard`, recovery demo `run.py --bump plate` |
-| OpenVINO & Intel optimisation (20) | `bench/export_act.py`, `bench/benchmark.py`, VLM on iGPU |
+| OpenVINO & Intel Core Ultra optimisation (20) | `bench/export_act.py`, `bench/benchmark.py`; policy on CPU / Arc iGPU / **NPU**, VLM on the Arc iGPU, all measured on a Core Ultra 7 155H — logs in `bench/core_ultra/` |
 | Technical quality & reproducibility (10) | seeded scenes, one-command scripts, [docs/setup.md](docs/setup.md) |
 | Innovation (5) | teacher-generated training data, closed-loop recovery, laptop-only |
 
@@ -169,8 +185,16 @@ Training the policy (CPU is enough): `train/record_demos.py` → `train/train_ac
 
 ## Honest limitations
 
-- **Hardware.** Tested on an 11th-gen Core i7 with Iris Xe — not the Core Ultra the brief
-  prefers, and no NPU. The brief allows "Intel CPU and iGPU"; the NPU path is untested.
+- **The NPU cannot run the vision-language model.** On a Core Ultra 7 155H with OpenVINO
+  2026.3, compiling Qwen3-VL-4B INT4 for the NPU aborts the process inside Intel's graphics
+  compiler ("Channels count of input tensor shape and filter shape must be the same"), so it
+  cannot even be caught and retried. `brain/language.py` therefore picks the iGPU up front when
+  the NPU is asked for. The ACT policy does run on the NPU, and is benchmarked there.
+- **The NPU needs static shapes.** `bench/export_act.py` reshapes the policy to the batch of one
+  the robot always uses before compiling for the NPU; dynamic batches are an OpenVINO NPU
+  limitation, not a model one.
+- **Development hardware.** Most of the build and all the training happened on a 2020 i7-1165G7
+  with Iris Xe and no NPU; the Core Ultra 7 155H was borrowed for the final measured run.
 - **Scripted hands for most skills.** Pick, place and hand-off are geometric skills driven by
   the camera. One skill (mug pick-and-place) is a trained ACT policy (`run.py --policy`), used
   when the target lies in the area it was trained on; the rest are the teacher that generated

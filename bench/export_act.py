@@ -94,6 +94,16 @@ def export(run: Path):
     print(f"saved to {out}")
 
 
+def compile_act(xml, device: str, env_dim: int, config=None):
+    """Compile the policy network. The NPU only takes static shapes, so there it is fixed to
+    the batch of one the robot always uses."""
+    core = ov.Core()
+    model = core.read_model(xml)
+    if device == "NPU":
+        model.reshape({model.inputs[0]: [1, 6], model.inputs[1]: [1, env_dim]})
+    return core.compile_model(model, device, config or {})
+
+
 class OpenVINORunner:
     """Drop-in replacement for eval_policy.TorchRunner, network in OpenVINO."""
 
@@ -109,7 +119,7 @@ class OpenVINORunner:
         self.n = policy.config.n_action_steps
         self.task = R.TASK
         xml = ckpt.parent.parent.parent / "openvino" / f"act_{precision}.xml"
-        self.net = ov.Core().compile_model(xml, device)
+        self.net = compile_act(xml, device, self.env_dim)
         self.queue = deque()
 
     def reset(self):

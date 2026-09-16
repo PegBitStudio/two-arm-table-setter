@@ -88,6 +88,11 @@ class VisionLanguage:
 
         self._ov = ov
         t = time.time()
+        if device == "NPU":
+            # The NPU compiler aborts the process on this model (Core Ultra 7 155H, OpenVINO
+            # 2026.3), so the fallback below never gets a chance — pick the device up front.
+            device = "GPU" if "GPU" in ov.Core().available_devices else "CPU"
+            print(f"the VLM does not compile on this NPU; using {device} instead")
         try:
             self.pipe = ov_genai.VLMPipeline(str(model_dir), device)
             self.device = device

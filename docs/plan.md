@@ -106,7 +106,9 @@ Main aim is **learning** (robot simulation, vision-language models, OpenVINO). W
 - [x] Slides (7, narration in notes), cover image, README with architecture, results and setup
 - [x] Public GitHub repo: https://github.com/PegBitStudio/two-arm-table-setter
 - [x] lablab form text: `submission/lablab_form.md`
-- [x] Close the final-audit gaps below (all but Core Ultra, voice, narration, user actions)
+- [x] Close the final-audit gaps below (all but narration and the user's lablab actions)
+- [x] **Core Ultra 7 155H run done (15 Sep)** — CPU + Arc iGPU + AI Boost NPU benchmarked, task
+      checked on all three, final video rebuilt; logs in `bench/core_ultra/`
 - [ ] Clean-machine test of the setup steps if possible
 - [ ] **User: submit on lablab by 3:00 PM WAT Wed 16 Sep** (deadline 7:30 PM)
 
@@ -116,10 +118,10 @@ Main aim is **learning** (robot simulation, vision-language models, OpenVINO). W
 |---|---|
 | Intel 1 — reproducible GitHub repo (setup, deps, scene, training, eval, inference, commands) | ✓ |
 | Intel 2 — reproducible MuJoCo dual-arm dinner-table sim, randomisation, eval config | ✓ `scene.py --hard`, `evaluate.py` |
-| Intel 3 — benchmark script: latency, throughput, device, precision, on Core Ultra 2/3 | ✓ throughput added (calls/s, actions/s); **no Core Ultra** |
+| Intel 3 — benchmark script: latency, throughput, device, precision, on Core Ultra 2/3 | ✓ latency + throughput on **Core Ultra 7 155H**, CPU / Arc iGPU / NPU, at FP32, FP16, INT8, INT8-weights |
 | Intel 4 — video, 10 randomised seeds, command + scene variation + outcome clear | ✓ `submission/two_arm_table_setter_demo.mp4`: 10/10 tables → recovery → benchmark cards (5:41) |
 | Intel 5 — technical README: architecture, model choice, bimanual strategy, training, robustness, OpenVINO, hardware mapping | ✓ all sections added |
-| Intel — "run final simulation on Core Ultra 2/3" | ✗ not possible on our laptop (brief allows Intel CPU + iGPU) |
+| Intel — "run final simulation on Core Ultra 2/3" | ✓ full robot on 10 hard tables on a Core Ultra 7 155H (9/10, 8 s/table), policy on the NPU end to end |
 | Intel — preserve task success after optimisation | ✓ `act_task` table |
 | Intel scenario — drawer, pouring | ✗ cut (optional "challenge option") |
 | lablab — title, short/long description, tags | ✓ `lablab_form.md` |
@@ -142,9 +144,10 @@ Main aim is **learning** (robot simulation, vision-language models, OpenVINO). W
 
 ## Where we'll lose points (and accept it)
 
-- **Core Ultra part of the 20 OpenVINO points.** Our laptop is an 11th-gen i7 with no AI chip (NPU).
-  The brief does allow "Intel CPU and iGPU", so we still show CPU vs. iGPU results. Say this openly
-  in the README.
+- ~~**Core Ultra part of the 20 OpenVINO points.**~~ **Closed 15 Sep** — a Core Ultra 7 155H was
+  borrowed and every benchmark re-run on its CPU, Arc iGPU and AI Boost NPU. One honest caveat
+  stays in the README: OpenVINO 2026.3's NPU compiler cannot build Qwen3-VL-4B's vision tower, so
+  the language model runs on the iGPU. The policy runs on the NPU.
 - **Pouring and drawer.** Hard to simulate well. Stretch goals only.
 
 ## Team
@@ -154,4 +157,5 @@ Useful split for two people:
 - **Person 2 — AI and speed:** vision-language model, training, OpenVINO, benchmark, voice.
 - **Both:** video, slides, README.
 
-A teammate with a Core Ultra laptop would win back most of the lost points. Worth asking for on Discord.
+A teammate with a Core Ultra laptop would win back most of the lost points. **Done 15 Sep** — the
+user's brother lent a Core Ultra 7 155H and the full suite was re-run on it.

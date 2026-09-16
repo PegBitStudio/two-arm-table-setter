@@ -35,8 +35,11 @@ def table_card(title, header, rows, note, seconds=6):
     y = 110
     for x, h in zip(xs, header):
         d.text((x, y), h, font=font(20), fill=(232, 185, 35))
+    # Row spacing shrinks to fit: a machine with CPU + iGPU + NPU has more rows than one without.
+    top = y + 46
+    step = min(44, (H - 90 - top) // max(len(rows), 1))
     for r, row in enumerate(rows):
-        yy = y + 46 + r * 44
+        yy = top + r * step
         for x, v in zip(xs, row):
             d.text((x, yy), str(v), font=font(22), fill=(240, 240, 240))
     d.text((W // 2, H - 50), note, font=font(20), fill=(170, 180, 190), anchor="mm")
@@ -91,7 +94,7 @@ def main():
         rows.append([label, f"{a['ms_per_call']:.2f} ms", f"{a['calls_per_s']:.0f}/s",
                      f"{a['speedup_vs_pytorch']:.1f}x", task.get(tkey, {}).get("within_1_5cm", "-")])
     act_card = table_card("Trained ACT policy on OpenVINO",
-                          ["backend", "latency", "throughput", "speed-up", "mug placed"], rows[:8],
+                          ["backend", "latency", "throughput", "speed-up", "mug placed"], rows,
                           f"{hw} - task success checked on 10 unseen tables", seconds=7)
     vdevs = [d for d in devices if any(k[0] == d for k in vlm)]
     vrows = [[f"{w} px"] + [f"{vlm[(d, w)]['s_per_command']} s" if (d, w) in vlm else "-" for d in vdevs]

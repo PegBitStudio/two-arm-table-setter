@@ -1,6 +1,8 @@
 # Setup
 
-Tested on Windows 11, i7-1165G7, Iris Xe, 16 GB RAM. Plain Windows, no WSL needed so far.
+Tested on Windows 11 on two machines: an Intel Core Ultra 7 155H (CPU + Arc iGPU + AI Boost NPU,
+the machine the published benchmarks come from) and a 2020 i7-1165G7 with Iris Xe, 16 GB RAM.
+Plain Windows, no WSL needed.
 
 ## 1. Python 3.12 environment
 
@@ -25,7 +27,10 @@ thousands of files.
 python -c "import openvino as ov; print(ov.Core().available_devices)"
 ```
 
-Team laptop prints `['CPU', 'GPU']` (GPU = Iris Xe; no NPU). A Core Ultra machine should also list `NPU`.
+The old laptop prints `['CPU', 'GPU']` (GPU = Iris Xe; no NPU). The Core Ultra 7 155H prints
+`['CPU', 'GPU', 'NPU']` — GPU = Arc Graphics, NPU = Intel AI Boost. The ACT policy runs on all
+three (`run.py --policy --policy-device NPU`); the vision-language model cannot compile for the
+NPU on OpenVINO 2026.3 and falls back to the GPU automatically.
 
 ```bash
 python sim/day1_wave.py
@@ -72,7 +77,8 @@ python brain/get_model.py
 ```
 
 `brain/language.py` looks for it in `~/.models/Qwen3-VL-4B-Instruct-int4-ov`. On the team laptop
-(Iris Xe GPU) it loads in 20–70 s and reads a command in ~18–30 s.
+(Iris Xe GPU) it loads in 20–70 s and reads a command in ~18–30 s; on the Core Ultra's Arc iGPU
+it loads in 13 s and reads a command in 1.3 s.
 
 ## 4. Voice (optional, Speechmatics bonus prize)
 

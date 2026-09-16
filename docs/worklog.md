@@ -238,3 +238,48 @@ upload (YouTube); narration (optional); final form submission before 16 Sep 19:3
   every library version pinned in requirements.txt.
 - Guides: `docs/core_ultra_guide.md` (volunteer, short) and `docs/core_ultra_setup.html`
   (detailed, 11 steps, for the user on the borrowed laptop). Hand-over: `HANDOFF.md`.
+
+## 2026-09-15 — the Core Ultra run (Core Ultra 7 155H)
+
+Everything was re-run on the borrowed laptop: **Intel Core Ultra 7 155H**, Windows 11,
+Python 3.12.10, OpenVINO 2026.3.1. OpenVINO listed all three chips — `CPU` (Core Ultra 7 155H),
+`GPU` (Arc Graphics iGPU) and `NPU` (Intel AI Boost). Raw logs are in `bench/core_ultra/`
+(`machine.json` plus one log per step); `bench/results.json` and `bench/RESULTS.md` now hold
+these numbers instead of the old laptop's.
+
+### What we found
+
+- **The policy runs on all three chips.** Fastest is still the CPU (INT8, 0.72 ms per call,
+  2.85× PyTorch), but the NPU is close behind at 0.90 ms (FP32) and places 10/10 mugs at FP16.
+  The iGPU sits between them at 1.42–1.93 ms. The Core Ultra CPU is itself about 2× the old
+  i7-1165G7 (PyTorch 2.07 ms vs 4.34 ms), so every backend got faster.
+- **The Arc iGPU transforms command understanding.** 1.3 s per command at 480 px, against 4.2 s
+  on the old Iris Xe and 3.6 s on the Core Ultra's own CPU — 2.8× the CPU, and time to first
+  token drops from 2.7 s to 0.70 s.
+- **Perception got 5.8× faster** — 155 ms per look vs 889 ms — because it is plain NumPy/SciPy
+  on the CPU.
+- **Full robot, 10 hard tables: 9/10 at 8 s per table**, same single failure seed (3, the spoon)
+  as on the old laptop, so the behaviour is unchanged by the hardware.
+
+### Two things had to be fixed on the machine
+
+1. **The NPU cannot compile Qwen3-VL-4B.** Intel's graphics compiler aborts the whole process
+   ("Channels count of input tensor shape and filter shape must be the same", leaving
+   `kernel.errors.txt` behind) — it raises no catchable Python exception, so the existing
+   fallback never got a turn. `brain/language.py` now picks the iGPU up front when the NPU is
+   asked for, and `bench/benchmark.py` skips the NPU row for the VLM rather than dying mid-run.
+   This is a real, reportable OpenVINO 2026.3 limitation, not a bug in our code.
+2. **The NPU needs static shapes.** Compiling the policy straight from the IR fails because the
+   batch dimension is dynamic. `bench/export_act.py` gained `compile_act()`, which reshapes the
+   inputs to the batch of one the robot always uses before compiling for the NPU; the CPU and
+   iGPU paths are untouched.
+
+A third, cosmetic fix: `submission/make_final_video.py` shrinks row spacing to fit, because a
+machine with CPU + iGPU + NPU produces more benchmark rows than one without, and the old fixed
+44-px step ran off the bottom of the card (it also no longer truncates to the first 8 rows).
+
+### Rebuilt with the new numbers
+
+`submission/two_arm_table_setter_demo.mp4` (7.9 MB) and `docs/media/demo.mp4`, plus
+`brain/out/demo_10_tables.mp4` and `brain/out/recovery.mp4`. README, the demo page
+(`docs/index.html`) and `submission/lablab_form.md` now quote the Core Ultra results.

@@ -63,6 +63,12 @@ def bench_vlm(devices, widths):
     img = scene_image()
     rows = []
     for dev in devices:
+        if dev == "NPU":
+            # The NPU compiler aborts the whole process on this model (Core Ultra 7 155H,
+            # OpenVINO 2026.3: "Channels count of input tensor shape and filter shape must be
+            # the same"), so it cannot be caught — skip it and keep the rest of the run.
+            print("  NPU: the VLM does not compile on this NPU, skipped")
+            continue
         brain = VisionLanguage(device=dev)
         if brain.device != dev:
             print(f"  {dev}: not usable for the VLM, skipped")
@@ -90,7 +96,7 @@ def bench_vlm(devices, widths):
 
 def bench_act(devices, calls=500):
     import torch
-    from export_act import ACTCore, RUN, ckpt_of
+    from export_act import ACTCore, RUN, ckpt_of, compile_act
     from eval_policy import io_dims, load_torch
 
     policy, *_ = load_torch(ckpt_of(RUN))
@@ -107,12 +113,11 @@ def bench_act(devices, calls=500):
             core(ts, te)
         rows.append({"backend": "PyTorch", "precision": "FP32", "device": "CPU",
                      "ms_per_call": round(1000 * (time.perf_counter() - t) / calls, 3)})
-    ovc = ov.Core()
     for prec in ("fp32", "fp16", "int8", "int8w"):
         xml = RUN / "openvino" / f"act_{prec}.xml"
         for dev in devices:
             try:
-                net = ovc.compile_model(xml, dev, {"PERFORMANCE_HINT": "LATENCY"})
+                net = compile_act(xml, dev, e.shape[1], {"PERFORMANCE_HINT": "LATENCY"})
             except RuntimeError as ex:
                 print(f"  {prec} on {dev}: {ex}")
                 continue

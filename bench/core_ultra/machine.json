@@ -1,0 +1,12 @@
+{
+  "when": "2026-09-15T14:24:37",
+  "os": "Windows-11-10.0.26200-SP0",
+  "python": "3.12.10",
+  "openvino": "2026.3.1-22476-759c5a6ab8c-releases/2026/3",
+  "devices": {
+    "CPU": "Intel(R) Core(TM) Ultra 7 155H",
+    "GPU": "Intel(R) Arc(TM) Graphics (iGPU)",
+    "NPU": "Intel(R) AI Boost"
+  },
+  "quick": false
+}

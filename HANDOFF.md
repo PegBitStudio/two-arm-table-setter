@@ -40,13 +40,18 @@ the items; Qwen3-VL (on OpenVINO) understands the command and picture; a planner
 arm does what and passes cutlery between the arms; after every item it looks again and fixes
 anything knocked out of place. One skill (moving the mug) is a trained LeRobot ACT policy.
 
-## Numbers (all on the user's laptop: i7-1165G7, Iris Xe, 16 GB, no NPU)
+## Numbers (measured 15 Sep on an Intel Core Ultra 7 155H — CPU + Arc iGPU + AI Boost NPU)
 
-- Set the table: **30/30** normal, **29/30** hard tables; demo video **10/10** hard tables.
-- Camera: 0.5 mm mean error. Voice: Speechmatics 2.6 s. Qwen3-VL: ~4 s/command, 5/5 correct.
+- Set the table: **30/30** normal, **29/30** hard tables (old laptop, 30 seeds); **9/10** hard
+  tables on the Core Ultra at 8 s/table; demo video **10/10** hard tables.
+- Camera: 0.5 mm mean error, 155 ms per look. Voice: Speechmatics 2.6 s.
+  Qwen3-VL: **1.3 s/command on the Arc iGPU** (3.6 s CPU), 5/5 correct.
 - ACT policy: **19/20 within 1.5 cm** on unseen tables (v7, 9k steps).
-- OpenVINO: ACT **2.5× faster** than PyTorch on CPU, task success unchanged at every precision.
-  Full table: `bench/RESULTS.md`.
+- OpenVINO: ACT **2.9× faster** than PyTorch on CPU (0.72 ms INT8 vs 2.07 ms), and **0.90 ms on
+  the NPU** with 10/10 mugs placed at FP16. Task success unchanged at every precision.
+  Full table: `bench/RESULTS.md`; raw logs `bench/core_ultra/`.
+- **The NPU cannot compile Qwen3-VL-4B** (OpenVINO 2026.3 graphics-compiler abort) — the VLM falls
+  back to the iGPU automatically. Documented as an honest limitation, not hidden.
 
 ## Main commands
 
@@ -77,6 +82,14 @@ python bench/volunteer.py [--quick]                         # the Core Ultra vol
   later run) — run benchmarks plugged in, nothing else running, and compare within one run.
 - Don't claim anything untested (we removed "spoken" claims until voice was tested, then restored them).
 
+## The Core Ultra run — done (15 Sep)
+
+Completed on a **Core Ultra 7 155H**. Results merged back into the repo on 16 Sep: code fixes
+(`brain/language.py`, `bench/export_act.py`, `bench/benchmark.py`, `submission/make_final_video.py`),
+`bench/results.json` + `bench/RESULTS.md`, evidence logs in `bench/core_ultra/`, and the rebuilt
+videos (`submission/two_arm_table_setter_demo.mp4`, `docs/media/demo.mp4`, `brain/out/*.mp4`).
+Full story: `docs/worklog.md`, entry 2026-09-15. The notes below are kept for reference.
+
 ## If this session is on the Core Ultra laptop
 
 The user's **brother's Intel Core Ultra laptop** is being lent to the user, who runs everything on it
@@ -98,9 +111,9 @@ https://pegbitstudio.github.io/two-arm-table-setter/core_ultra_setup.html).
 
 ## Open items / next steps
 
-1. **Core Ultra runs** — the user now has the laptop (see above). When results come back, add the
-   numbers to `bench/RESULTS.md`, README, slides and the demo page, and swap in the Core Ultra demo
-   video (this closes the biggest scoring gap: "run on Core Ultra 2/3", NPU).
+1. ~~**Core Ultra runs**~~ — **done**, merged 16 Sep (see above). Remaining: the slide deck
+   (`submission/slides.pptx`, rebuild with `node submission/build_slides.js`) still quotes the old
+   laptop's numbers if it names any — check before submitting.
 2. **Live listening (optional, for the Speechmatics bonus):** microphone → Speechmatics real-time
    API → robot acts. Offered to the user, not started (~half a day).
 3. **Narrated pitch video (optional):** voice-over from the slide notes.

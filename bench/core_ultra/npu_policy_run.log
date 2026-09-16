@@ -1,0 +1,13 @@
+﻿Loading weights from local directory
+Trained ACT policy loaded (OpenVINO FP16, NPU)
+Camera sees: bottle, fork, mug, plate, spoon
+AI model loaded on GPU in 15s
+Understood (Qwen3-VL-4B (GPU), 1.3s):
+  mug -> right_of_plate
+  (the plate isn't in the middle yet - I'll put it there first)
+  plate -> center: arm A picks up the plate; arm A puts the plate at (+0.00, -0.02)
+  mug -> right_of_plate: arm B moves the mug to (+0.07, -0.02) with the trained ACT policy (OpenVINO)
+
+Result:
+  plate  camera says done: yes | actually done: yes
+  mug    camera says done: yes | actually done: yes
