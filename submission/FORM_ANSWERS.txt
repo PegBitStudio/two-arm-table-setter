@@ -17,7 +17,7 @@ HOW IT WORKS. An overhead colour-and-depth camera finds every object from its he
 
 LEARNING. Our scripted skills became the teacher, recording 1,219 successful demonstrations automatically. A LeRobot ACT policy trained on a laptop CPU learned the mug skill - 19/20 within 1.5 cm on tables it had never seen. It took seven versions; the write-up covers what failed and why.
 
-INTEL OPTIMISATION, on a Core Ultra 7 155H across all three chips. OpenVINO runs the policy 2.9x faster than PyTorch on the CPU (0.72 ms vs 2.07 ms) with no loss of task success. The same policy runs on the AI Boost NPU at 0.90 ms and places 10/10 mugs, freeing the CPU and iGPU. The Arc iGPU reads a command in 1.3 s, 2.8x faster than the CPU. An honest negative result too: OpenVINO 2026.3's NPU compiler cannot build Qwen3-VL's vision tower, so the language model falls back to the iGPU automatically.
+INTEL OPTIMISATION, on a Core Ultra 7 155H across all three chips. OpenVINO runs the policy 2.9x faster than PyTorch on the CPU (0.72 ms vs 2.07 ms) with no loss of task success. The same policy runs on the AI Boost NPU at 0.90 ms at FP32, and at FP16 there it places 10/10 mugs, freeing the CPU and iGPU. The Arc iGPU reads a command in 1.3 s, 2.8x faster than the CPU. An honest negative result too: OpenVINO 2026.3's NPU compiler cannot build Qwen3-VL's vision tower, so the language model falls back to the iGPU automatically.
 
 RESULTS. 30/30 random tables set correctly, 29/30 on harder ones, 9/10 on the Core Ultra. Every number is checked against simulator truth, reproducible from one command, and the raw logs ship in the repo. Not included, said plainly: the drawer and pouring, and most skills are scripted rather than learned.
 

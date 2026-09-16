@@ -116,7 +116,7 @@ Two further points lower the cost of getting there:
 | Part | Runs on | Format |
 |---|---|---|
 | Command understanding — Qwen3-VL-4B | **iGPU** (Arc) by default, 1.3 s/command; CPU also works; the NPU cannot compile it | OpenVINO GenAI, INT4 |
-| Mug skill — ACT policy (5 M parameters) | **CPU** by default (0.72 ms, 2.9× PyTorch); also runs on the **NPU** (0.90 ms, 10/10 task) and the iGPU — `run.py --policy-device NPU` | OpenVINO IR, FP16 (FP32/INT8 also exported) |
+| Mug skill — ACT policy (5 M parameters) | **CPU** by default (0.72 ms, 2.9× PyTorch); also runs on the **NPU** (0.90 ms at FP32; 10/10 task at FP16) and the iGPU — `run.py --policy-device NPU` | OpenVINO IR, FP16 (FP32/INT8 also exported) |
 | Perception — colour + depth analysis | CPU — 155 ms per look at 960×720 colour + depth | NumPy/SciPy (no neural network) |
 | Physics simulation | CPU | MuJoCo 3.13 |
 

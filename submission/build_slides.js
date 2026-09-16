@@ -33,7 +33,7 @@ function circle(s, x, y, label, d = 0.42) {
 // 2 — the idea + headline numbers
 {
   const s = pres.addSlide(); bg(s);
-  title(s, "One command. Two hands. A set table.", "Tested the way Intel asked: random tables, success checked against simulator truth");
+  title(s, "One command. Two hands. A set table.", "Success checked against simulator truth, never the robot's camera · task scores over 30 random tables; speed on a Core Ultra 7 155H");
   const lines = [
     { text: "Say or type what you want", options: { bold: true, color: C.white, breakLine: true } },
     { text: "\"put the red thing top left of the plate and the grey utensil on the right\"", options: { italic: true, color: C.mute, breakLine: true } },
