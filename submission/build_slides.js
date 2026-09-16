@@ -43,7 +43,7 @@ function circle(s, x, y, label, d = 0.42) {
   ];
   s.addText(lines, { x: 0.5, y: 1.5, w: 4.1, h: 3.4, fontFace: B, fontSize: 16, valign: "top", margin: 0, isTextBox: true });
   const stats = [["30/30", "tables set correctly"], ["29/30", "harder tables: positions, sizes, colours"],
-                 ["95%", "trained ACT policy on unseen tables"], ["~4 s", "to understand a command (was 30 s)"]];
+                 ["95%", "trained ACT policy on unseen tables"], ["1.3 s", "to understand a command (was 30 s)"]];
   stats.forEach(([n, l], i) => {
     const x = 5.0 + (i % 2) * 2.3, y = 1.45 + Math.floor(i / 2) * 1.75;
     s.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y, w: 2.1, h: 1.55, fill: { color: C.panel }, line: { color: C.panel }, rectRadius: 0.08 });
@@ -152,14 +152,14 @@ function circle(s, x, y, label, d = 0.42) {
     showLegend: false, showTitle: true, title: "ACT policy, ms per call, CPU unless marked (lower is better)", titleColor: C.white, titleFontSize: 13,
   });
   const calls = [["2.9×", "faster policy on CPU with OpenVINO — task success unchanged at every precision (9–10/10)"],
-                 ["0.90 ms", "on the AI Boost NPU — 10/10 mugs placed, freeing the CPU and iGPU"],
+                 ["0.90 ms", "for the whole policy on the AI Boost NPU at FP32; at FP16 it places 10/10 mugs"],
                  ["1.3 s", "to read a command on the Arc iGPU — 2.8× the CPU, down from 30 s originally"]];
   calls.forEach(([n, d], i) => {
     const y = 1.4 + i * 1.3;
     s.addText(n, { x: 6.1, y, w: 3.5, h: 0.5, fontFace: H, fontSize: 26, bold: true, color: C.yellow, margin: 0, isTextBox: true });
     s.addText(d, { x: 6.1, y: y + 0.5, w: 3.5, h: 0.7, fontFace: B, fontSize: 12, color: C.mute, valign: "top", margin: 0, isTextBox: true });
   });
-  s.addNotes("We measured this on a Core Ultra 7 155H, across all three of its Intel chips. OpenVINO makes our trained policy nearly three times faster on the CPU, and the robot still succeeds just as often. The same policy runs on the AI Boost NPU at nine tenths of a millisecond, placing the mug ten times out of ten, which frees the processor and graphics for everything else. The Arc graphics reads a command in one point three seconds, almost three times faster than the processor. One honest finding: the NPU compiler cannot build the vision-language model at all, so that part falls back to the graphics chip automatically.");
+  s.addNotes("We measured this on a Core Ultra 7 155H, across all three of its Intel chips. OpenVINO makes our trained policy nearly three times faster on the CPU, and the robot still succeeds just as often. The same policy runs on the AI Boost NPU at nine tenths of a millisecond, and at half precision there it places the mug ten times out of ten, which frees the processor and graphics for everything else. The Arc graphics reads a command in one point three seconds, almost three times faster than the processor. One honest finding: the NPU compiler cannot build the vision-language model at all, so that part falls back to the graphics chip automatically.");
 }
 
 // 7 — honest + try it

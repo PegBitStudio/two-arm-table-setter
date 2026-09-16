@@ -58,7 +58,7 @@ camera; each row says which machine it came from where it matters.
 | Command understanding (Qwen3-VL-4B INT4, OpenVINO GenAI) | 5/5 test commands, **1.3 s** per command on the Arc iGPU (3.6 s on CPU) |
 | Trained ACT policy (LeRobot), mug pick-and-place on 20 unseen tables | **19/20 within 1.5 cm** |
 | ACT on OpenVINO vs PyTorch, CPU | **2.9× faster** (0.72 ms vs 2.07 ms per call), task success unchanged |
-| ACT policy on the **NPU** (AI Boost) | 0.90 ms per call, **10/10** mugs placed at FP16 |
+| ACT policy on the **NPU** (AI Boost) | 0.90 ms per call at FP32; at FP16 (1.06 ms) it places **10/10** mugs |
 | Full task on the Core Ultra, 10 hard tables | **9/10**, 8 s per table |
 
 ### Intel optimisation, measured ([full table](bench/RESULTS.md), `python bench/benchmark.py`)
