@@ -30,3 +30,20 @@ Online
 TECHNOLOGIES USED
 ======================================================================
 OpenVINO, Intel Core Ultra, NPU, OpenVINO GenAI, NNCF, LeRobot, ACT, Qwen3-VL, MuJoCo, SO-101, Python, PyTorch, Speechmatics, Robotics, Physical AI, Vision-Language Model, Imitation Learning
+
+======================================================================
+ADDITIONAL INFORMATION
+======================================================================
+Pitch video (narrated, 2:56): https://youtu.be/3iH_Mt60lbo
+Live demo page: https://pegbitstudio.github.io/two-arm-table-setter/
+Code (MIT): https://github.com/PegBitStudio/two-arm-table-setter
+
+Everything is reproducible from one command. Raw logs from the Core Ultra 7 155H run - every
+benchmark, the task check on all three chips, and the NPU runs - are in bench/core_ultra/ in the
+repo, alongside the machine's own report of its hardware. `python bench/volunteer.py` re-runs the
+whole measurement on any Intel machine.
+
+Stated plainly: the drawer and the pouring from Intel's example task are not built, most skills
+are scripted rather than learned (one, the mug pick-and-place, is a trained ACT policy), and
+OpenVINO 2026.3's NPU compiler cannot build Qwen3-VL's vision tower - so the language model falls
+back to the Arc iGPU automatically. The ACT policy does run on the NPU and is benchmarked there.

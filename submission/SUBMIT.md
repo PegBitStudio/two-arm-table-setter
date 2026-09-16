@@ -14,8 +14,7 @@ at all, so do them first even if you want to polish something else.
 
 ## 2. Uploads
 
-- [ ] **Pitch video → YouTube** (`submission/pitch_video.mp4`, 3:25). This is the one judges
-      watch first. Unlisted is fine.
+- [x] **Pitch video → YouTube** — done: https://youtu.be/3iH_Mt60lbo (unlisted, 2:56).
 - [ ] **Demo video → YouTube** (`submission/two_arm_table_setter_demo.mp4`, 5:41) — the robot
       actually working, 10 tables, recovery, benchmark cards.
 - [ ] Paste both links into the form. If it only takes one, use the **pitch video**.
